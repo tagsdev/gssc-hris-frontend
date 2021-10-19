@@ -1,90 +1,25 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
-    <q-header class="bg-primary">
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-          icon="menu"
-        />
-
-        <q-toolbar-title>
-          Amkor HRIS
-        </q-toolbar-title>
-
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      content-class="bg-white text-grey-8"
-      elevated
-    >
-      <q-list padding>
-        <q-item clickable v-ripple>
-          <q-item-section avatar class="q-pa-none">
-            <q-icon name="dashboard" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Dashboard</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-expansion-item
-          expand-separator
-          icon="card_giftcard"
-          label="Compensation & Benefits"
-        >
-          <q-item clickable v-ripple :inset-level="1">
-            <q-item-section>
-              <q-item-label>iLAP</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple :inset-level="1">
-            <q-item-section>
-              <q-item-label>Tulong Aral</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-
-        <q-item clickable v-ripple>
-          <q-item-section avatar class="q-pa-none">
-            <q-icon name="account_balance" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Payroll</q-item-label>
-          </q-item-section>
-        </q-item>
-        
-        <q-item clickable v-ripple>
-          <q-item-section avatar class="q-pa-none">
-            <q-icon name="hail" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Recruitment</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-drawer>
-
-    <q-page-container>
-      <router-view></router-view>
-    </q-page-container>
-  </q-layout>
+  <component :is="layout">
+    <router-view></router-view>
+  </component>
 </template>
 
 <script>
-export default {
-  name: 'LayoutDefault',
+import Cookies from 'js-cookie'
 
-  data () {
-    return {
-      leftDrawerOpen: false
+export default {
+  name: 'App',
+  components: {
+    AuthLayout: () => import('./layouts/Auth'),
+    UserLayout: () => import('./layouts/User')
+  },
+  computed: {
+    layout() {
+      let accessToken = Cookies.get('accessToken')
+      if(accessToken) {
+        return 'UserLayout'
+      }
+      return 'AuthLayout'
     }
   }
 }
