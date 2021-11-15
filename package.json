@@ -28,7 +28,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "node-sass": "^4.13.0",
     "postcss-rtl": "^1.2.3",
-    "sass": "^1.26.5",
+    "sass": "1.32.13",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-quasar": "^3.0.2",
     "vue-template-compiler": "^2.6.11"
