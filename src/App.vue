@@ -5,8 +5,6 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
-
 export default {
   name: 'App',
   components: {
@@ -15,8 +13,7 @@ export default {
   },
   computed: {
     layout() {
-      let accessToken = Cookies.get('accessToken')
-      if(accessToken) {
+      if(this.$route.meta.auth) {
         return 'UserLayout'
       }
       return 'AuthLayout'

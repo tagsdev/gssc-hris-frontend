@@ -12,7 +12,8 @@ const routes = [
   {
     path: '/',
     name: 'Dashboard',
-    component: () => import('../views/Dashboard')
+    component: () => import('../views/Dashboard'),
+    meta: { auth: true }
   }
 ]
 
