@@ -83,9 +83,8 @@
                     password: this.loginForm.password
                 }
 
-                axios.post(`${process.env.VUE_APP_API_URL}login`, body)
+                axios.post(`${process.env.VUE_APP_API_URL}/login`, body)
                     .then(response => {
-                        console.log(response)
                         Cookies.set('accessToken', response.data.access_token)
 
                         this.$router.push('/')

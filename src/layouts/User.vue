@@ -1,91 +1,130 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
-    <q-header class="bg-primary">
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-          icon="menu"
-        />
+    <q-layout view="hHh Lpr lFf">
+        <q-header class="bg-primary">
+            <q-toolbar>
+                <q-btn
+                    flat
+                    dense
+                    round
+                    @click="leftDrawerOpen = !leftDrawerOpen"
+                    aria-label="Menu"
+                    icon="menu"
+                />
 
-        <q-toolbar-title>
-          Amkor HRIS
-        </q-toolbar-title>
+                <q-toolbar-title>
+                    Amkor HRIS
+                </q-toolbar-title>
 
-      </q-toolbar>
-    </q-header>
+            </q-toolbar>
+        </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      content-class="bg-white text-grey-8"
-      elevated
-    >
-      <q-list padding>
-        <q-item clickable v-ripple>
-          <q-item-section avatar class="q-pa-none">
-            <q-icon name="dashboard" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Dashboard</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-expansion-item
-          expand-separator
-          icon="card_giftcard"
-          label="Compensation & Benefits"
+        <q-drawer
+            v-model="leftDrawerOpen"
+            show-if-above
+            content-class="bg-white text-grey-8"
+            elevated
         >
-          <q-item clickable v-ripple :inset-level="1">
-            <q-item-section>
-              <q-item-label>iLAP</q-item-label>
-            </q-item-section>
-          </q-item>
+            <q-list padding>
+                <q-item clickable v-ripple :to="{ name: 'Dashboard' }">
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="dashboard" />
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label>Dashboard</q-item-label>
+                    </q-item-section>
+                </q-item>
 
-          <q-item clickable v-ripple :inset-level="1">
-            <q-item-section>
-              <q-item-label>Tulong Aral</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
+                <q-expansion-item
+                    expand-separator
+                    icon="card_giftcard"
+                    label="Compensation & Benefits"
+                >
+                    <q-item clickable v-ripple :inset-level="1">
+                        <q-item-section>
+                            <q-item-label>iLAP</q-item-label>
+                        </q-item-section>
+                    </q-item>
 
-        <q-item clickable v-ripple>
-          <q-item-section avatar class="q-pa-none">
-            <q-icon name="account_balance" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Payroll</q-item-label>
-          </q-item-section>
-        </q-item>
-        
-        <q-item clickable v-ripple>
-          <q-item-section avatar class="q-pa-none">
-            <q-icon name="hail" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Recruitment</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-drawer>
+                    <q-item clickable v-ripple :inset-level="1">
+                        <q-item-section>
+                            <q-item-label>Tulong Aral</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                </q-expansion-item>
 
-    <q-page-container>
-      <slot></slot>
-    </q-page-container>
-  </q-layout>
+                <q-item clickable v-ripple>
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="account_balance" />
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label>Payroll</q-item-label>
+                    </q-item-section>
+                </q-item>
+                
+                <q-item clickable v-ripple>
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="hail" />
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label>Recruitment</q-item-label>
+                    </q-item-section>
+                </q-item>
+                
+                <q-item clickable v-ripple :to="{ name: 'Attendance' }">
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="today" />
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label>Attendance</q-item-label>
+                    </q-item-section>
+                </q-item>
+                
+                <q-item clickable v-ripple @click="logout">
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="logout" />
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label>Logout</q-item-label>
+                    </q-item-section>
+                </q-item>
+            </q-list>
+        </q-drawer>
+
+        <q-page-container>
+            <slot></slot>
+        </q-page-container>
+    </q-layout>
 </template>
 
 <script>
-export default {
-  name: 'UserLayout',
+    import axios from 'axios'
+    import Cookies from 'js-cookie'
 
-  data () {
-    return {
-      leftDrawerOpen: false
+    export default {
+        name: 'UserLayout',
+
+        data () {
+            return {
+                leftDrawerOpen: false
+            }
+        },
+        methods: {
+            logout() {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                }
+
+                axios.post(`${process.env.VUE_APP_API_URL}/logout`, {}, { headers })
+                    .then(response => {
+                        Cookies.remove('accessToken')
+
+                        this.$router.push('/login')
+                    })
+                    .catch(error => {
+                        this.errorMessage = error.message
+                        console.error(error)
+                    })
+            }
+        }
     }
-  }
-}
 </script>
