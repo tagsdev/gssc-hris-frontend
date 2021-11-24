@@ -2,8 +2,8 @@
     <q-page padding :class="$route.name" class="q-pa-lg">
         <FullCalendar :options="calendarOptions">
             <template v-slot:eventContent='arg'>
-                <strong class="float-left">{{ arg.event.title.split('|')[0] }}</strong>
-                <strong class="float-right">{{ arg.event.title.split('|')[1] }}</strong>
+                <code class="float-left">{{ arg.event.title.split('|')[0] }}</code>
+                <code class="float-right">{{ arg.event.title.split('|')[1] }}</code>
             </template>
         </FullCalendar>
     </q-page>
