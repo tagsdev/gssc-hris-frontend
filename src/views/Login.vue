@@ -86,6 +86,7 @@
                 axios.post(`${process.env.VUE_APP_API_URL}/login`, body)
                     .then(response => {
                         Cookies.set('accessToken', response.data.access_token)
+                        Cookies.set('authName', response.data.user.name)
 
                         this.$router.push('/')
                     })

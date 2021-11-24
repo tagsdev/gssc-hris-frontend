@@ -95,13 +95,19 @@
                     </q-item-section>
                 </q-item>
 
-                <q-item clickable active-class="sidebar-link--active" v-ripple @click="logout">
+                <!-- Add more link items here -->
+
+                <q-item clickable class="fixed-bottom text-black" active-class="sidebar-link--active" v-ripple @click="logout">
                     <q-item-section avatar class="q-pa-none">
-                        <q-icon name="logout" />
+                        <q-icon name="person_pin" />
                     </q-item-section>
 
                     <q-item-section>
-                        <q-item-label>Logout</q-item-label>
+                        <q-item-label>{{ this.authName }}</q-item-label>
+                    </q-item-section>
+
+                    <q-item-section side>
+                        <q-icon name="logout" />
                     </q-item-section>
                 </q-item>
             </q-list>
@@ -121,7 +127,8 @@
         name: 'UserLayout',
         data () {
             return {
-                leftDrawerOpen: false
+                leftDrawerOpen: false,
+                authName: ""
             }
         },
         methods: {
@@ -141,6 +148,10 @@
                         console.error(error)
                     })
             }
+        },
+        mounted() {
+            console.log(Cookies.get('authName'))
+            this.authName = Cookies.get('authName')
         }
     }
 </script>
