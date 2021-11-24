@@ -73,21 +73,26 @@
 <style lang="scss">
     .Attendance {
         .fc-scrollgrid {
-            border: none;
+            // border: none;
 
             .fc-scrollgrid-section-body td {
-                border: none !important;
+                // border: none !important;
             }
 
             .fc-col-header-cell {
-                border: none;
+                padding: 5px 0px;
+
+                // border: none;
+                background: #aeaeae;
+                // color: #ffffff;
                 text-transform: uppercase;
             }
 
             .fc-daygrid-day {
                 padding: 5px;
 
-                border: none;
+                // border: none;
+                border: 1px solid #cfcfcf;
                 font-weight: bold;
             }
 
@@ -96,7 +101,11 @@
             }
 
             .fc-day-other {
-                background: #dedede;
+                background: #cfcfcf;
+            }
+
+            .fc-scroller-liquid-absolute {
+                overflow: hidden !important;
             }
         }
     }

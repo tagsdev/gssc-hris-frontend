@@ -55,6 +55,7 @@
     import axios from 'axios'
     import Cookies from 'js-cookie'
     import { DateTime } from 'luxon'
+    import moment from 'moment'
 
     export default {
         name: 'TimeClock',
@@ -93,6 +94,9 @@
                 this.clockedIn = !this.clockedIn
 
                 let punch = this.clockedIn ? 'I' : 'O'
+
+                Cookies.set('userLatestTap', punch == 'I' ? 'Timed In' : 'Timed Out')
+                Cookies.set('userLatestTime', moment(new Date()).format('MMMM DD, YYYY h:mm:ss A'))
 
                 let headers = {
                     'Authorization': `Bearer ${ Cookies.get('accessToken') }`

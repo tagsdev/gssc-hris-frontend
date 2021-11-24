@@ -21,7 +21,7 @@
                     </q-item-section>
                 </q-item>
 
-                <q-item clickable active-class="sidebar-link--active" v-ripple>
+                <!-- <q-item clickable active-class="sidebar-link--active" v-ripple>
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="account_balance" />
                     </q-item-section>
@@ -29,9 +29,9 @@
                     <q-item-section>
                         <q-item-label>Compensations</q-item-label>
                     </q-item-section>
-                </q-item>
+                </q-item> -->
 
-                <q-item clickable active-class="sidebar-link--active" v-ripple>
+                <!-- <q-item clickable active-class="sidebar-link--active" v-ripple>
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="account_balance" />
                     </q-item-section>
@@ -39,9 +39,9 @@
                     <q-item-section>
                         <q-item-label>Benefits</q-item-label>
                     </q-item-section>
-                </q-item>
+                </q-item> -->
 
-                <q-item clickable active-class="sidebar-link--active" v-ripple>
+                <!-- <q-item clickable active-class="sidebar-link--active" v-ripple>
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="account_balance" />
                     </q-item-section>
@@ -49,9 +49,9 @@
                     <q-item-section>
                         <q-item-label>Payroll</q-item-label>
                     </q-item-section>
-                </q-item>
+                </q-item> -->
 
-                <q-item clickable active-class="sidebar-link--active" v-ripple>
+                <!-- <q-item clickable active-class="sidebar-link--active" v-ripple>
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="hail" />
                     </q-item-section>
@@ -59,7 +59,7 @@
                     <q-item-section>
                         <q-item-label>Recruitment</q-item-label>
                     </q-item-section>
-                </q-item>
+                </q-item> -->
 
                 <q-item clickable active-class="sidebar-link--active" v-ripple :to="{ name: 'Attendance' }">
                     <q-item-section avatar class="q-pa-none">
