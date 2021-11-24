@@ -38,7 +38,7 @@
             </q-card-section>
 
             <q-card-section class="q-pa-none" v-show="!loading" key="lastactivity">
-                <p class="text-center last-activity">Last Activity: Timed Out Yesterday, 4:00 PM</p>
+                <p class="text-center last-activity">Last Activity: {{ latestPunch.tap }} {{ latestPunch.time }}</p>
             </q-card-section>
         </transition-group>
 
@@ -65,12 +65,14 @@
                 seconds: '',
                 period: '',
                 clockedIn: false,
-                loading: true
+                loading: true,
+                latestPunch: []
             }
         },
         mounted() {
             this.getCurrentTime()
             this.displayClock()
+            this.getLatestPunch()
         },
         methods: {
             getCurrentTime() {
@@ -98,13 +100,17 @@
 
                 axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: punch }, { headers })
                     .then(response => {
-                        console.log(response)
+                        // console.log(response)
                         // some user prompt
                     })
                     .catch(error => {
                         this.errorMessage = error.message
                         console.error(error)
                     })
+            },
+            getLatestPunch() {
+                this.latestPunch.tap = Cookies.get('userLatestTap') == 'I' ? 'Timed In' : 'Timed Out'
+                this.latestPunch.time = Cookies.get('userLatestTime')
             }
         }
     }

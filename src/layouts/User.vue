@@ -116,6 +116,9 @@
                 axios.post(`${process.env.VUE_APP_API_URL}/logout`, {}, { headers })
                     .then(response => {
                         Cookies.remove('accessToken')
+                        Cookies.remove('authName')
+                        Cookies.remove('userLatestTap')
+                        Cookies.remove('userLatestTime')
 
                         this.$router.push('/login')
                     })
@@ -126,7 +129,6 @@
             }
         },
         mounted() {
-            console.log(Cookies.get('authName'))
             this.authName = Cookies.get('authName')
         }
     }
