@@ -1,15 +1,5 @@
 <template>
     <q-layout view="hHh Lpr lFf">
-        <!-- <q-header class="bg-primary">
-            <q-toolbar>
-                <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu" icon="menu" />
-
-                <q-toolbar-title>
-                    Amkor HRIS
-                </q-toolbar-title>
-            </q-toolbar>
-        </q-header> -->
-
         <q-drawer v-model="leftDrawerOpen" show-if-above content-class="main-sidebar bg-white text-grey-8" elevated>
             <q-list padding>
                 <q-item clickable v-ripple class="sidebar-brand" :to="{ name: 'Dashboard' }">
@@ -30,20 +20,6 @@
                         <q-item-label>Dashboard</q-item-label>
                     </q-item-section>
                 </q-item>
-
-                <!-- <q-expansion-item expand-separator icon="card_giftcard" label="Compensation & Benefits">
-                    <q-item clickable active-class="sidebar-link--active" v-ripple :inset-level="1">
-                        <q-item-section>
-                            <q-item-label>iLAP</q-item-label>
-                        </q-item-section>
-                    </q-item>
-
-                    <q-item clickable active-class="sidebar-link--active" v-ripple :inset-level="1">
-                        <q-item-section>
-                            <q-item-label>Tulong Aral</q-item-label>
-                        </q-item-section>
-                    </q-item>
-                </q-expansion-item> -->
 
                 <q-item clickable active-class="sidebar-link--active" v-ripple>
                     <q-item-section avatar class="q-pa-none">
