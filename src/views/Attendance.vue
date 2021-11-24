@@ -1,6 +1,11 @@
 <template>
     <q-page padding :class="$route.name" class="q-pa-lg">
-        <FullCalendar :options="calendarOptions" />
+        <FullCalendar :options="calendarOptions">
+            <template v-slot:eventContent='arg'>
+                <strong class="float-left">{{ arg.event.title.split('|')[0] }}</strong>
+                <strong class="float-right">{{ arg.event.title.split('|')[1] }}</strong>
+            </template>
+        </FullCalendar>
     </q-page>
 </template>
 
@@ -24,7 +29,10 @@
                     dateClick: this.handleDateClick,
                     contentHeight: 500,
                     fixedWeekCount: false,
-                    events: []
+                    events: [],
+                    eventBackgroundColor: 'transparent',
+                    eventBorderColor: 'transparent',
+                    eventTextColor: 'black'
                 }
             }
         },
@@ -52,3 +60,35 @@
         }
     }
 </script>
+
+<style lang="scss">
+    .Attendance {
+        .fc-scrollgrid {
+            border: none;
+
+            .fc-scrollgrid-section-body td {
+                border: none !important;
+            }
+
+            .fc-col-header-cell {
+                border: none;
+                text-transform: uppercase;
+            }
+
+            .fc-daygrid-day {
+                padding: 5px;
+
+                border: none;
+                font-weight: bold;
+            }
+
+            .fc-day-today {
+                background: rgba(45, 125, 200, 0.25) !important;
+            }
+
+            .fc-day-other {
+                background: #dedede;
+            }
+        }
+    }
+</style>
