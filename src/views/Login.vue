@@ -99,8 +99,8 @@
 </script>
 
 <style lang="scss">
-    * {
-        font-size: 1rem;
+    .loginCol * {
+        font-size: 1.15rem;
     }
 
     .loginCard {

@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
   const allowedRoutes = ['/login']
   const accessToken = Cookies.get('accessToken')
 
-  if(accessToken) {
+  if((accessToken) && (accessToken != "undefined")) {
     if(allowedRoutes.includes(to.path)) {
       next('/')
     } else {

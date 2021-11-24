@@ -1,88 +1,105 @@
 <template>
     <q-layout view="hHh Lpr lFf">
-        <q-header class="bg-primary">
+        <!-- <q-header class="bg-primary">
             <q-toolbar>
-                <q-btn
-                    flat
-                    dense
-                    round
-                    @click="leftDrawerOpen = !leftDrawerOpen"
-                    aria-label="Menu"
-                    icon="menu"
-                />
+                <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu" icon="menu" />
 
                 <q-toolbar-title>
                     Amkor HRIS
                 </q-toolbar-title>
-
             </q-toolbar>
-        </q-header>
+        </q-header> -->
 
-        <q-drawer
-            v-model="leftDrawerOpen"
-            show-if-above
-            content-class="bg-white text-grey-8"
-            elevated
-        >
+        <q-drawer v-model="leftDrawerOpen" show-if-above content-class="main-sidebar bg-white text-grey-8" elevated>
             <q-list padding>
-                <q-item clickable v-ripple :to="{ name: 'Dashboard' }">
+                <q-item clickable v-ripple class="sidebar-brand" :to="{ name: 'Dashboard' }">
+                    <q-item-section avatar class="q-pa-none">
+                    </q-item-section>
+
+                    <q-item-section>
+                        <img :src="require('../assets/images/amkor_logo.png')" alt="Amkor Logo" class="sidebar-logo" />
+                    </q-item-section>
+                </q-item>
+
+                <q-item clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Dashboard' }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="dashboard" />
                     </q-item-section>
+
                     <q-item-section>
                         <q-item-label>Dashboard</q-item-label>
                     </q-item-section>
                 </q-item>
 
-                <q-expansion-item
-                    expand-separator
-                    icon="card_giftcard"
-                    label="Compensation & Benefits"
-                >
-                    <q-item clickable v-ripple :inset-level="1">
+                <!-- <q-expansion-item expand-separator icon="card_giftcard" label="Compensation & Benefits">
+                    <q-item clickable active-class="sidebar-link--active" v-ripple :inset-level="1">
                         <q-item-section>
                             <q-item-label>iLAP</q-item-label>
                         </q-item-section>
                     </q-item>
 
-                    <q-item clickable v-ripple :inset-level="1">
+                    <q-item clickable active-class="sidebar-link--active" v-ripple :inset-level="1">
                         <q-item-section>
                             <q-item-label>Tulong Aral</q-item-label>
                         </q-item-section>
                     </q-item>
-                </q-expansion-item>
+                </q-expansion-item> -->
 
-                <q-item clickable v-ripple>
+                <q-item clickable active-class="sidebar-link--active" v-ripple>
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="account_balance" />
                     </q-item-section>
+
+                    <q-item-section>
+                        <q-item-label>Compensations</q-item-label>
+                    </q-item-section>
+                </q-item>
+
+                <q-item clickable active-class="sidebar-link--active" v-ripple>
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="account_balance" />
+                    </q-item-section>
+
+                    <q-item-section>
+                        <q-item-label>Benefits</q-item-label>
+                    </q-item-section>
+                </q-item>
+
+                <q-item clickable active-class="sidebar-link--active" v-ripple>
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="account_balance" />
+                    </q-item-section>
+
                     <q-item-section>
                         <q-item-label>Payroll</q-item-label>
                     </q-item-section>
                 </q-item>
-                
-                <q-item clickable v-ripple>
+
+                <q-item clickable active-class="sidebar-link--active" v-ripple>
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="hail" />
                     </q-item-section>
+
                     <q-item-section>
                         <q-item-label>Recruitment</q-item-label>
                     </q-item-section>
                 </q-item>
-                
-                <q-item clickable v-ripple :to="{ name: 'Attendance' }">
+
+                <q-item clickable active-class="sidebar-link--active" v-ripple :to="{ name: 'Attendance' }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="today" />
                     </q-item-section>
+
                     <q-item-section>
                         <q-item-label>Attendance</q-item-label>
                     </q-item-section>
                 </q-item>
-                
-                <q-item clickable v-ripple @click="logout">
+
+                <q-item clickable active-class="sidebar-link--active" v-ripple @click="logout">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="logout" />
                     </q-item-section>
+
                     <q-item-section>
                         <q-item-label>Logout</q-item-label>
                     </q-item-section>
@@ -102,7 +119,6 @@
 
     export default {
         name: 'UserLayout',
-
         data () {
             return {
                 leftDrawerOpen: false
@@ -128,3 +144,44 @@
         }
     }
 </script>
+
+<style lang="scss">
+    .main-sidebar {
+        overflow-y: hidden;
+
+        background: #ebebeb !important;
+        font-size: 14px !important;
+        font-weight: bold;
+        text-transform: uppercase;
+
+        .q-item__section--avatar {
+            margin-left: 10px;
+            min-width: 50px;
+            padding-left: 10px;
+        }
+
+        .sidebar-logo {
+            padding-top: 20px;
+            padding-bottom: 30px;
+            width: 70%;
+        }
+
+        .q-item:not(.sidebar-brand) {
+            margin: 10px 20px !important;
+            padding: 10px 5px !important;
+
+            border-radius: 10px;
+            color: #AAAAAA;
+
+            &:hover {
+                color: #0d4c8f;
+            }
+        }
+
+        .sidebar-link--active {
+            background: #ffffff !important;
+            box-shadow: 0px 5px 20px -10px rgba(0, 0, 0, 0.5);
+            color: #0d4c8f !important;
+        }
+    }
+</style>

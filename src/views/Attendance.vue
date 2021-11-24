@@ -22,7 +22,7 @@
                     plugins: [ dayGridPlugin, interactionPlugin ],
                     initialView: 'dayGridMonth',
                     dateClick: this.handleDateClick,
-                    contentHeight: 600,
+                    contentHeight: 500,
                     fixedWeekCount: false,
                     events: []
                 }
