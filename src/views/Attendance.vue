@@ -1,11 +1,19 @@
 <template>
     <q-page padding :class="$route.name" class="q-pa-lg">
-        <FullCalendar :options="calendarOptions">
-            <template v-slot:eventContent='arg'>
-                <code class="float-left">{{ arg.event.title.split('|')[0] }}</code>
-                <code class="float-right">{{ arg.event.title.split('|')[1] }}</code>
-            </template>
-        </FullCalendar>
+        <div class="row reverse">
+            <div class="col-xs-12 col-sm-8 col-md-6 col-xl-4 q-pl-md inoutclockCol">
+                <time-clock></time-clock>
+            </div>
+
+            <div class="col-xs-12 q-pt-lg">
+                <FullCalendar :options="calendarOptions">
+                    <template v-slot:eventContent='arg'>
+                        <code class="float-left">{{ arg.event.title.split('|')[0] }}</code>
+                        <code class="float-right">{{ arg.event.title.split('|')[1] }}</code>
+                    </template>
+                </FullCalendar>
+            </div>
+        </div>
     </q-page>
 </template>
 
@@ -19,7 +27,8 @@
 
     export default {
         components: {
-            FullCalendar
+            FullCalendar,
+            TimeClock: () => import('../components/Dashboard/TimeClock')
         },
         data() {
             return {
