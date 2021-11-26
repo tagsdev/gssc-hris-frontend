@@ -38,7 +38,7 @@
             </q-card-section>
 
             <q-card-section class="q-pa-none" v-show="!loading" key="lastactivity">
-                <p class="text-center last-activity">Last Activity: {{ latestPunch.tap }} {{ latestPunch.time }}</p>
+                <p v-show="latestPunch" class="text-center last-activity">Last Activity: {{ latestPunch.tap }} {{ latestPunch.time }}</p>
             </q-card-section>
         </transition-group>
 
@@ -113,8 +113,13 @@
                     })
             },
             getLatestPunch() {
-                this.latestPunch.tap = Cookies.get('userLatestTap') == 'I' ? 'Timed In' : 'Timed Out'
-                this.latestPunch.time = Cookies.get('userLatestTime')
+                if (Cookies.get('userLatestTap')) {
+                    this.latestPunch.tap = Cookies.get('userLatestTap') == 'I' ? 'Timed In' : 'Timed Out'
+                }
+
+                if (Cookies.get('userLatestTime')) {
+                    this.latestPunch.time = Cookies.get('userLatestTime')
+                }
             }
         }
     }

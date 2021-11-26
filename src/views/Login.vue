@@ -87,8 +87,11 @@
                     .then(response => {
                         Cookies.set('accessToken', response.data.access_token)
                         Cookies.set('authName', response.data.user.name)
-                        Cookies.set('userLatestTap', response.data.latestPunch.tap)
-                        Cookies.set('userLatestTime', response.data.latestPunch.time)
+
+                        if (response.data.latestPunch) {
+                            Cookies.set('userLatestTap', response.data.latestPunch.tap)
+                            Cookies.set('userLatestTime', response.data.latestPunch.time)
+                        }
 
                         this.$router.push('/')
                     })
