@@ -90,7 +90,7 @@
             displayClock() {
                 setTimeout(() => {
                     this.loading = false
-                }, 1500)
+                }, 1000)
             },
             getLatestPunch() {
                 if ((Cookies.get('userLatestTap')) && (Cookies.get('userLatestTap') != "undefined")) {
