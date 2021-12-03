@@ -60,6 +60,7 @@
 <script>
     import axios from 'axios'
     import Cookies from 'js-cookie'
+    import { Notify } from 'quasar'
 
     export default {
         name: 'Login',
@@ -88,15 +89,25 @@
 
                 axios.post(`${ process.env.VUE_APP_API_URL }/login`, body)
                     .then(response => {
-                        Cookies.set('accessToken', response.data.access_token)
-                        Cookies.set('authName', response.data.user.name)
+                        if (response.data.status_code == 200) {
+                            Cookies.set('accessToken', response.data.access_token)
+                            Cookies.set('authName', response.data.user.name)
 
-                        if (response.data.latestPunch) {
-                            Cookies.set('userLatestTap', response.data.latestPunch.tap)
-                            Cookies.set('userLatestTime', response.data.latestPunch.time)
+                            if (response.data.latestPunch) {
+                                Cookies.set('userLatestTap', response.data.latestPunch.tap == 'I' ? "Timed In" : "Timed Out")
+                                Cookies.set('userLatestTime', response.data.latestPunch.time)
+                            }
+
+                            this.$router.push('/')
+                        } else {
+                            this.isLoading = false
+
+                            Notify.create({
+                                type: 'negative',
+                                message: response.data.message,
+                                closeBtn: false,
+                            })
                         }
-
-                        this.$router.push('/')
                     })
                     .catch(error => {
                         this.isLoading = false
