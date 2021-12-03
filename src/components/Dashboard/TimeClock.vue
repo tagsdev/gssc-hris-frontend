@@ -4,22 +4,22 @@
             <q-card-section class="q-pa-none" v-show="!loading" key="time">
                 <div class="row justify-between items-center">
                     <div class="col-3 text-center">
-                        <p class="time relative-position">{{hours}} <span class="time-separator absolute">:</span></p>
+                        <p class="time relative-position">{{ hours }} <span class="time-separator absolute">:</span></p>
                         <p class="time-label">Hours</p>
                     </div>
 
                     <div class="col-3 text-center">
-                        <p class="time relative-position">{{minutes}} <span class="time-separator absolute">:</span></p>
+                        <p class="time relative-position">{{ minutes }} <span class="time-separator absolute">:</span></p>
                         <p class="time-label">Minutes</p>
                     </div>
 
                     <div class="col-3 text-center">
-                        <p class="time relative-position">{{seconds}} <span class="time-separator absolute">:</span></p>
+                        <p class="time relative-position">{{ seconds }} <span class="time-separator absolute">:</span></p>
                         <p class="time-label">Seconds</p>
                     </div>
 
                     <div class="col-3 text-center">
-                        <p class="time relative-position">{{period}}</p>
+                        <p class="time relative-position">{{ period }}</p>
                         <p class="time-label">Period</p>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
             </q-card-section>
 
             <q-card-section class="q-pa-none" v-show="!loading" key="lastactivity">
-                <p v-show="latestPunch" class="text-center last-activity">Last Activity: {{ latestPunch.tap }} {{ latestPunch.time }}</p>
+                <p v-show="latestPunchTime.length" class="text-center last-activity">Last Activity: {{ latestPunchTap }} {{ latestPunchTime }}</p>
             </q-card-section>
         </transition-group>
 
@@ -56,6 +56,7 @@
     import Cookies from 'js-cookie'
     import { DateTime } from 'luxon'
     import moment from 'moment'
+    import { Notify } from 'quasar'
 
     export default {
         name: 'TimeClock',
@@ -67,13 +68,14 @@
                 period: '',
                 clockedIn: false,
                 loading: true,
-                latestPunch: []
+                latestPunchTap: '',
+                latestPunchTime: '',
             }
         },
         mounted() {
+            this.getLatestPunch()
             this.getCurrentTime()
             this.displayClock()
-            this.getLatestPunch()
         },
         methods: {
             getCurrentTime() {
@@ -90,37 +92,61 @@
                     this.loading = false
                 }, 1500)
             },
-            inout() {
-                this.clockedIn = !this.clockedIn
-
-                let punch = this.clockedIn ? 'I' : 'O'
-
-                Cookies.set('userLatestTap', punch == 'I' ? 'Timed In' : 'Timed Out')
-                Cookies.set('userLatestTime', moment(new Date()).format('MMMM DD, YYYY h:mm:ss A'))
-
-                let headers = {
-                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
-                }
-
-                axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: punch }, { headers })
-                    .then(response => {
-                        // console.log(response)
-                        // some user prompt
-                    })
-                    .catch(error => {
-                        this.errorMessage = error.message
-                        console.error(error)
-                    })
-            },
             getLatestPunch() {
-                if (Cookies.get('userLatestTap')) {
-                    this.latestPunch.tap = Cookies.get('userLatestTap') == 'I' ? 'Timed In' : 'Timed Out'
+                if ((Cookies.get('userLatestTap')) && (Cookies.get('userLatestTap') != "undefined")) {
+                    this.latestPunchTap = Cookies.get('userLatestTap')
                 }
 
-                if (Cookies.get('userLatestTime')) {
-                    this.latestPunch.time = Cookies.get('userLatestTime')
+                if ((Cookies.get('userLatestTime')) && (Cookies.get('userLatestTime') != "undefined")) {
+                    this.latestPunchTime = Cookies.get('userLatestTime')
                 }
-            }
+
+                this.clockedIn = this.latestPunchTap == 'Timed In' ? true : false
+            },
+            inout() {
+                var punch = !this.clockedIn ? 'I' : 'O'
+                let _punch = punch == 'I' ? "Time In" : "Time Out"
+
+                this.$q.dialog({
+                    title: 'Confirm',
+                    message: `You are about to ${ _punch }.`,
+                    cancel: true,
+                    persistent: true
+                }).onOk(() => {
+                    this.clockedIn = !this.clockedIn
+
+                    let headers = {
+                        'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                    }
+
+                    axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: punch }, { headers })
+                        .then(response => {
+                            this.latestPunchTap = punch == 'I' ? 'Timed In' : 'Timed Out'
+                            this.latestPunchTime = moment(new Date()).format('MMMM DD, YYYY h:mm:ss A')
+                            this.$emit('refetchEvents')
+
+                            Cookies.set('userLatestTap', this.latestPunchTap)
+                            Cookies.set('userLatestTime', this.latestPunchTime)
+
+                            Notify.create({
+                                type: 'positive',
+                                message: `Successfully ${ this.latestPunchTap }!`,
+                                closeBtn: false,
+                            })
+                        })
+                        .catch(error => {
+                            this.errorMessage = error.message
+
+                            Notify.create({
+                                type: 'negative',
+                                message: error.message,
+                                closeBtn: false,
+                            })
+
+                            console.error(error)
+                        })
+                })
+            },
         }
     }
 </script>

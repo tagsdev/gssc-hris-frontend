@@ -2,7 +2,7 @@
     <q-page padding :class="$route.name" class="q-pa-lg">
         <div class="row reverse">
             <div class="col-xs-12 col-sm-8 col-md-6 col-xl-4 q-pl-md inoutclockCol">
-                <time-clock></time-clock>
+                <time-clock @refetchEvents="getAttendance()"></time-clock>
             </div>
 
             <div class="col-xs-12 q-pt-lg">
@@ -46,10 +46,7 @@
             }
         },
         methods: {
-            handleDateClick: function (arg) {
-                // alert('date click! ' + arg.dateStr)
-            },
-            getAttendance: function () {
+            getAttendance() {
                 let headers = {
                     'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                 }

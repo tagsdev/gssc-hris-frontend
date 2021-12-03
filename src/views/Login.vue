@@ -45,7 +45,7 @@
                         </template>
                     </q-input>
 
-                    <q-btn type="submit" color="secondary" class="full-width q-py-xs loginBtn" label="Log in" no-caps />
+                    <q-btn type="submit" color="secondary" class="full-width q-py-xs loginBtn" :loading="isLoading" :disabled="isLoading" label="Log in" no-caps />
                 </q-form>
             </q-card-section>
         </q-card>
@@ -69,6 +69,7 @@
                     username: '',
                     password: ''
                 },
+                isLoading: false,
                 showPassword: false,
                 activeInput: {
                     username: false,
@@ -83,7 +84,9 @@
                     password: this.loginForm.password
                 }
 
-                axios.post(`${process.env.VUE_APP_API_URL}/login`, body)
+                this.isLoading = true
+
+                axios.post(`${ process.env.VUE_APP_API_URL }/login`, body)
                     .then(response => {
                         Cookies.set('accessToken', response.data.access_token)
                         Cookies.set('authName', response.data.user.name)
@@ -96,6 +99,7 @@
                         this.$router.push('/')
                     })
                     .catch(error => {
+                        this.isLoading = false
                         this.errorMessage = error.message
                         console.error(error)
                     })
