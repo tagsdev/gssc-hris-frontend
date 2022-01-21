@@ -104,6 +104,10 @@
             .fc-scroller-liquid-absolute {
                 overflow: hidden !important;
             }
+
+            a.fc-daygrid-event {
+                display: grid;
+            }
         }
     }
 </style>
