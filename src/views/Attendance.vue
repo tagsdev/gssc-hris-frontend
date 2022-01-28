@@ -28,7 +28,6 @@
     export default {
         components: {
             FullCalendar,
-            TimeClock: () => import('../components/Dashboard/TimeClock')
         },
         data() {
             return {
