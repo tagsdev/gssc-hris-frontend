@@ -91,6 +91,7 @@
                     .then(response => {
                         Cookies.set('accessToken', response.data.access_token)
                         Cookies.set('authName', response.data.user.name)
+                        Cookies.set('jsPermissions', response.data.jsPermissions)
 
                         if (response.data.latestPunch) {
                             Cookies.set('userLatestTap', response.data.latestPunch.tap == 'I' ? "Timed In" : "Timed Out")

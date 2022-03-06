@@ -119,6 +119,7 @@
                         Cookies.remove('authName')
                         Cookies.remove('userLatestTap')
                         Cookies.remove('userLatestTime')
+                        Cookies.remove('jsPermissions')
 
                         this.$router.push('/login')
                     })
