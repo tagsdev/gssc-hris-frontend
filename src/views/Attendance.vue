@@ -61,14 +61,7 @@
                     to: ''
                 },
                 date_placeholder: "",
-                json_fields: {
-                    'BadgeNumber': 'BadgeNumber',
-                    'Tap': 'Tap',
-                    'DatePunches': 'DatePunches',
-                    'Extracted': 'Extracted',
-                },
                 loadingExcelExport: false,
-                json_data: [],
                 calendarOptions: {
                     plugins: [ dayGridPlugin, interactionPlugin ],
                     initialView: 'dayGridMonth',
@@ -111,6 +104,12 @@
 
                         if (data) {
                             exportFromJSON({ data, fileName, exportType })
+                        } else {
+                            Notify.create({
+                                type: 'warning',
+                                message: `Requested data is empty.`,
+                                closeBtn: false,
+                            })
                         }
                     })
                     .catch(error => {
