@@ -44,6 +44,7 @@
     import interactionPlugin from '@fullcalendar/interaction'
     import moment from 'moment'
     import exportFromJSON from "export-from-json";
+    import { Notify } from 'quasar'
 
     window.Laravel = {
         jsPermissions: JSON.parse(Cookies.get('jsPermissions'))
@@ -114,6 +115,13 @@
                     })
                     .catch(error => {
                         this.errorMessage = error.message
+
+                        Notify.create({
+                            type: 'negative',
+                            message: error.response.data.message,
+                            closeBtn: false,
+                        })
+
                         console.error(error)
                     });
             },
