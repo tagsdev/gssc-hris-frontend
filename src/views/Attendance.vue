@@ -8,7 +8,7 @@
                     <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                             <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
-                                <q-date v-model="date_range" range today-btn @input="testingLang()" />
+                                <q-date v-model="date_range" range today-btn @input="populateDateRange()" />
                             </q-popup-proxy>
                         </q-icon>
                     </template>
@@ -52,7 +52,6 @@
     export default {
         components: {
             FullCalendar,
-            // TimeClock: () => import('../components/Dashboard/TimeClock')
         },
         data() {
             return {
@@ -118,7 +117,7 @@
                         console.error(error)
                     });
             },
-            testingLang() {
+            populateDateRange() {
                 let _format = "MMM DD, YYYY"
                 this.date_placeholder = `${ moment(this.date_range.from).format(_format) } to ${ moment(this.date_range.to).format(_format) }`
             }
