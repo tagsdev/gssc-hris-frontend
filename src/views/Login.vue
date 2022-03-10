@@ -90,7 +90,7 @@
                 axios.post(`${ process.env.VUE_APP_API_URL }/login`, body)
                     .then(response => {
                         Cookies.set('accessToken', response.data.access_token)
-                        Cookies.set('authName', response.data.user.name)
+                        Cookies.set('authName', response.data.user.DisplayName)
                         Cookies.set('jsPermissions', response.data.jsPermissions)
 
                         if (response.data.latestPunch) {
