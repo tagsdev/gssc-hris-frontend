@@ -68,6 +68,7 @@
 
                     <q-item-section>
                         <q-item-label>Attendance</q-item-label>
+                        <q-item-label caption>Raw</q-item-label>
                     </q-item-section>
                 </q-item>
 
@@ -79,7 +80,7 @@
                     </q-item-section>
 
                     <q-item-section>
-                        <q-item-label>{{ this.authName }}</q-item-label>
+                        <q-item-label class="_displayname">{{ this.authName }}</q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
@@ -172,6 +173,14 @@
             background: #ffffff !important;
             box-shadow: 0px 5px 20px -10px rgba(0, 0, 0, 0.5);
             color: #0d4c8f !important;
+        }
+
+        ._displayname {
+            width: 300px;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 </style>
