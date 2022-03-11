@@ -96,6 +96,8 @@
                     responseType: 'blob'
                 }
 
+                this.loadingExcelExport = true
+
                 axios.post(`${ process.env.VUE_APP_API_URL }/user/get-emp-attendance`, { data: this.date_range }, { headers })
                     .then(response => {
                         const data = response.data
@@ -111,6 +113,8 @@
                                 closeBtn: false,
                             })
                         }
+
+                        this.loadingExcelExport = false
                     })
                     .catch(error => {
                         this.errorMessage = error.message
@@ -122,6 +126,7 @@
                         })
 
                         console.error(error)
+                        this.loadingExcelExport = false
                     });
             },
             populateDateRange() {
