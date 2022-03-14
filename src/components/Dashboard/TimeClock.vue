@@ -76,6 +76,13 @@
             this.getLatestPunch()
             this.getCurrentTime()
             this.displayClock()
+
+            this.latestPunchTap = Cookies.get('userLatestTap')
+            this.latestPunchTime = Cookies.get('userLatestTime')
+
+            if ((this.latestPunchTap == "Timed In") && (moment().diff(this.latestPunchTime, 'hours') >= 13)) {
+                this.promptMissedLog()
+            }
         },
         methods: {
             getCurrentTime() {
@@ -145,6 +152,90 @@
 
                             console.error(error)
                         })
+                })
+            },
+            promptMissedLog() {
+                this.$q.dialog({
+                    title: 'Missed Clock Out?',
+                    message: `The system detected something.<br /><em>Last Activity: ${ this.latestPunchTap } ${ this.latestPunchTime }</em>`,
+                    html: true,
+                    options: {
+                        type: 'radio',
+                        model: 'opt1',
+                        items: [
+                            {
+                                label: 'No, It looks good.',
+                                value: 'opt1',
+                                color: 'secondary'
+                            },
+                            {
+                                label: 'Yes, I forgot to Clock Out.',
+                                value: 'opt2',
+                                color: 'secondary'
+                            },
+                        ]
+                    },
+                    cancel: false,
+                    ok: "Submit",
+                    persistent: true
+                }).onOk(data => {
+                    if (data == "opt2") {
+                        this.$q.dialog({
+                            title: 'Clock-Out Correction',
+                            message: `Date and Time of missed Clock Out:<br /><em>Last Activity: ${ this.latestPunchTap } ${ this.latestPunchTime }</em>`,
+                            html: true,
+                            prompt: {
+                                model: '',
+                                isValid: val => true,
+                                type: 'datetime-local'
+                            },
+                            ok: "Submit",
+                            cancel: false,
+                            persistent: true
+                        }).onOk(data => {
+                            const correction = Notify.create({
+                                type: 'ongoing',
+                                message: `Sending Clock Out correction...`,
+                                closeBtn: false,
+                            })
+
+                            let _datePunches = moment(data).format('YYYY-MM-DD h:mm:ss A')
+                            let headers = {
+                                'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                            }
+
+                            axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: 'O', DatePunches: _datePunches }, { headers })
+                                .then(response => {
+                                    correction()
+                                    this.$emit('refetchEvents')
+
+                                    Cookies.set('userLatestTap', 'Timed Out')
+                                    Cookies.set('userLatestTime', moment(data).format('MMMM DD, YYYY h:mm:ss A'))
+
+                                    this.clockedIn = false
+                                    this.latestPunchTap = "Timed Out"
+                                    this.latestPunchTime = moment(data).format('MMMM DD, YYYY h:mm:ss A')
+
+                                    Notify.create({
+                                        type: 'positive',
+                                        message: `Successfully Timed Out!`,
+                                        closeBtn: false,
+                                    })
+                                })
+                                .catch(error => {
+                                    correction()
+                                    this.errorMessage = error.message
+
+                                    Notify.create({
+                                        type: 'negative',
+                                        message: error.message,
+                                        closeBtn: false,
+                                    })
+
+                                    console.error(error)
+                                })
+                        })
+                    }
                 })
             },
         }
