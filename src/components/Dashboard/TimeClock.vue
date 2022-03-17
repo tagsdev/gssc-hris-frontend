@@ -77,12 +77,12 @@
             this.getCurrentTime()
             this.displayClock()
 
-            this.latestPunchTap = Cookies.get('userLatestTap')
-            this.latestPunchTime = Cookies.get('userLatestTime')
+            // this.latestPunchTap = Cookies.get('userLatestTap')
+            // this.latestPunchTime = Cookies.get('userLatestTime')
 
-            if ((this.latestPunchTap == "Timed In") && (moment().diff(this.latestPunchTime, 'hours') >= 13)) {
-                this.promptMissedLog()
-            }
+            // if ((this.latestPunchTap == "Timed In") && (moment().diff(this.latestPunchTime, 'hours') >= 13)) {
+            //     this.promptMissedLog()
+            // }
         },
         methods: {
             getCurrentTime() {
@@ -126,7 +126,7 @@
                         'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                     }
 
-                    axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: punch }, { headers })
+                    axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: punch, DatePunches: moment(new Date()).format('MMMM DD, YYYY h:mm:ss A') }, { headers })
                         .then(response => {
                             this.latestPunchTap = punch == 'I' ? 'Timed In' : 'Timed Out'
                             this.latestPunchTime = moment(new Date()).format('MMMM DD, YYYY h:mm:ss A')
