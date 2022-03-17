@@ -126,7 +126,7 @@
                         'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                     }
 
-                    axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: punch, DatePunches: moment(new Date()).format('MMMM DD, YYYY h:mm:ss A') }, { headers })
+                    axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: punch, DatePunches: moment(new Date()).format('YYYY-MM-DD h:mm:ss A') }, { headers })
                         .then(response => {
                             this.latestPunchTap = punch == 'I' ? 'Timed In' : 'Timed Out'
                             this.latestPunchTime = moment(new Date()).format('MMMM DD, YYYY h:mm:ss A')
