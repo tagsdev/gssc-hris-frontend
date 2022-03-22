@@ -1,12 +1,12 @@
 <template>
     <q-page padding :class="$route.name" class="q-pa-lg">
         <div class="page-header bg-primary">
-            <h4>Attendance <q-badge color="primary" align="bottom">RAW</q-badge></h4>
+            <h4>Attendance <q-badge color="primary" align="bottom">PROCESSED</q-badge></h4>
         </div>
 
         <div class="row">
             <div v-if="can('export-employee-attendance')" class="col-xs-12 col-sm-8 col-md-6 col-xl-4 q-pl-md">
-                <h5># Generate Raw Employee Attendance</h5>
+                <h5># Generate Processed Employee Attendance</h5>
 
                 <q-input filled v-model="date_placeholder">
                     <template v-slot:append>
@@ -85,7 +85,7 @@
                     'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                 }
 
-                axios.get(`${ process.env.VUE_APP_API_URL }/user/list-attendance/raw`, { headers })
+                axios.get(`${ process.env.VUE_APP_API_URL }/user/list-attendance/processed`, { headers })
                     .then(response => {
                         this.calendarOptions.events = response.data
                     })
@@ -102,10 +102,10 @@
 
                 this.loadingExcelExport = true
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/user/get-emp-attendance`, { data: this.date_range, dataType: 'raw' }, { headers })
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/get-emp-attendance`, { data: this.date_range, dataType: 'processed' }, { headers })
                     .then(response => {
                         const data = response.data
-                        const fileName = `Amkor Employee Attendance (RAW) (${ this.date_range.from } to ${ this.date_range.to })`
+                        const fileName = `Amkor Employee Attendance (PROCESSED) (${ this.date_range.from } to ${ this.date_range.to })`
                         const exportType = exportFromJSON.types.csv
 
                         if (data) {
@@ -145,7 +145,7 @@
 </script>
 
 <style lang="scss">
-    .Raw {
+    .Processed {
         .page-header {
             margin-top: -25px;
             padding: 5px 50px;

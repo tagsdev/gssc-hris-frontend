@@ -16,9 +16,15 @@ const routes = [
     meta: { auth: true }
   },
   {
-    path: '/attendance',
-    name: 'Attendance',
+    path: '/attendance/raw',
+    name: 'Raw',
     component: () => import('../views/Attendance'),
+    meta: { auth: true }
+  },
+  {
+    path: '/attendance/processed',
+    name: 'Processed',
+    component: () => import('../views/Attendance-Processed'),
     meta: { auth: true }
   }
 ]

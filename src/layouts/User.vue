@@ -61,7 +61,7 @@
                     </q-item-section>
                 </q-item> -->
 
-                <q-item clickable active-class="sidebar-link--active" v-ripple :to="{ name: 'Attendance' }">
+                <q-item clickable active-class="sidebar-link--active" v-ripple :to="{ name: 'Raw' }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="today" />
                     </q-item-section>
@@ -69,6 +69,17 @@
                     <q-item-section>
                         <q-item-label>Attendance</q-item-label>
                         <q-item-label caption>Raw</q-item-label>
+                    </q-item-section>
+                </q-item>
+
+                <q-item clickable active-class="sidebar-link--active" v-ripple :to="{ name: 'Processed' }">
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="today" />
+                    </q-item-section>
+
+                    <q-item-section>
+                        <q-item-label>Attendance</q-item-label>
+                        <q-item-label caption>Processed</q-item-label>
                     </q-item-section>
                 </q-item>
 
