@@ -5,9 +5,11 @@
         </div>
 
         <div class="row">
-            <div v-if="can('export-employee-attendance')" class="col-xs-12 col-sm-8 col-md-6 col-xl-4 q-pl-md">
-                <h5># Generate Raw Employee Attendance</h5>
+            <h5># Generate Raw Employee Attendance</h5>
+        </div>
 
+        <div class="row">
+            <div v-if="can('export-employee-attendance')" class="col-xs-12 col-sm-8 col-md-6 col-xl-4 q-pl-md">
                 <q-input filled v-model="date_placeholder">
                     <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
