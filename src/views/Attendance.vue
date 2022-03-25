@@ -4,12 +4,12 @@
             <h4>Attendance <q-badge color="primary" align="bottom">RAW</q-badge></h4>
         </div>
 
-        <div class="row">
+        <div v-if="can('export-employee-attendance')" class="row">
             <h5># Generate Raw Employee Attendance</h5>
         </div>
 
-        <div class="row">
-            <div v-if="can('export-employee-attendance')" class="col-xs-12 col-sm-8 col-md-6 col-xl-4 q-pl-md">
+        <div v-if="can('export-employee-attendance')" class="row">
+            <div class="col-xs-12 col-sm-8 col-md-6 col-xl-4 q-pl-md">
                 <q-input filled v-model="date_placeholder">
                     <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
@@ -25,10 +25,12 @@
                 <q-btn icon="download" @click="exportExcel()" :loading="loadingExcelExport" color="green-7" label="Export To Excel" />
             </div>
 
-            <div v-if="can('export-employee-attendance')" class="col-12 q-pt-lg">
+            <div class="col-12 q-pt-lg">
                 <hr />
             </div>
+        </div>
 
+        <div class="row">
             <div class="col-xs-12 q-pt-lg">
                 <FullCalendar :options="calendarOptions">
                     <template v-slot:eventContent='arg'>
