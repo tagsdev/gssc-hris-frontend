@@ -74,7 +74,7 @@
                     plugins: [ dayGridPlugin, interactionPlugin ],
                     initialView: 'dayGridMonth',
                     dateClick: this.handleDateClick,
-                    contentHeight: 500,
+                    contentHeight: 'auto',
                     fixedWeekCount: false,
                     events: [],
                     eventBackgroundColor: 'transparent',
