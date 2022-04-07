@@ -73,7 +73,7 @@
                 calendarOptions: {
                     plugins: [ dayGridPlugin, interactionPlugin ],
                     initialView: 'dayGridMonth',
-                    dateClick: this.handleDateClick,
+                    // dateClick: this.handleDateClick,
                     contentHeight: 'auto',
                     fixedWeekCount: false,
                     events: [],
@@ -198,6 +198,10 @@
 
             a.fc-daygrid-event {
                 display: grid;
+            }
+
+            .fc-daygrid-event-harness {
+                margin-top: 0 !important;
             }
 
             .fc-daygrid-event-harness-abs {
