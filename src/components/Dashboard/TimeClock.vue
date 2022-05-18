@@ -1,5 +1,5 @@
 <template>
-    <q-card dark class="bg-primary inoutclock q-pa-md">
+    <q-card dark class="bg-primary inoutclock q-pa-md q-mr-md">
         <transition-group appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
             <q-card-section class="q-pa-none" v-show="!loading" key="time">
                 <div class="row justify-between items-center">
@@ -76,13 +76,6 @@
             this.getLatestPunch()
             this.getCurrentTime()
             this.displayClock()
-
-            // this.latestPunchTap = Cookies.get('userLatestTap')
-            // this.latestPunchTime = Cookies.get('userLatestTime')
-
-            // if ((this.latestPunchTap == "Timed In") && (moment().diff(this.latestPunchTime, 'hours') >= 13)) {
-            //     this.promptMissedLog()
-            // }
         },
         methods: {
             getCurrentTime() {
@@ -120,14 +113,13 @@
                     cancel: true,
                     persistent: true
                 }).onOk(() => {
-                    this.clockedIn = !this.clockedIn
-
                     let headers = {
                         'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                     }
 
                     axios.post(`${ process.env.VUE_APP_API_URL }/user/attend`, { tap: punch, DatePunches: moment(new Date()).format('YYYY-MM-DD h:mm:ss A') }, { headers })
                         .then(response => {
+                            this.clockedIn = !this.clockedIn
                             this.latestPunchTap = punch == 'I' ? 'Timed In' : 'Timed Out'
                             this.latestPunchTime = moment(new Date()).format('MMMM DD, YYYY h:mm:ss A')
                             this.$emit('refetchEvents')
@@ -141,16 +133,20 @@
                                 closeBtn: false,
                             })
                         })
-                        .catch(error => {
-                            this.errorMessage = error.message
+                        .catch((error) => {
+                            this.errorMessage = error.response.data.message
 
                             Notify.create({
                                 type: 'negative',
-                                message: error.message,
+                                message: error.response.data.message,
                                 closeBtn: false,
                             })
 
-                            console.error(error)
+                            console.error(error.response.data.message)
+
+                            setTimeout(function () {
+                                location.reload();
+                            }, 3000);
                         })
                 })
             },
@@ -244,8 +240,8 @@
 
 <style lang="scss">
     .inoutclock {
-        border-radius: 20px !important;
-        filter: drop-shadow(0px 10px 20px #0075B8);
+        border-radius: 2rem !important;
+        box-shadow: 0px 5px 15px 0px rgba(0, 117, 184, 0.75);
         height: 245px;
 
         .q-inner-loading {
@@ -259,16 +255,15 @@
         font-size: 36px;
         text-shadow: 5px 5px 3px rgba(0, 0, 0, 0.2);
         font-weight: 500;
-        margin: 14px 0;
+        margin-top: 1rem;
     }
-
 
     .time-separator {
         color: rgba(255, 255, 255, 0.3);
         font-size: 18px;
         font-weight: 500;
         right: 0;
-        top: 18px;
+        top: 0.75rem;
     }
 
     .time-label {
@@ -276,11 +271,10 @@
         font-size: 14px;
         font-weight: 500;
         text-transform: uppercase;
-        margin: 14px;
     }
 
     .inout {
-        font-size: 18px;
+        font-size: 14px;
         font-weight: 600;
         text-transform: uppercase;
     }
@@ -295,15 +289,33 @@
 
     .last-activity {
         color: rgba(255, 255, 255, 0.3);
-        font-size: 14px;
+        font-size: 10px;
         font-weight: 400;
         font-style: italic;
         margin: 14px;
     }
 
+    @media screen and (max-width: 1366px) {
+        .inoutclock {
+            height: 245px;
+        }
+
+        .time-label {
+            font-size: 12px;
+        }
+
+        .inout {
+            padding: 0.5rem !important;
+        }
+
+        .inout, .last-activity {
+            font-size: 10px;
+        }
+    }
+
     @media screen and (max-width: 1199px) {
         .inoutclock {
-            height: 225px;
+            height: 245px;
         }
 
         .time {

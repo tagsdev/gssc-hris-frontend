@@ -1,6 +1,6 @@
 <template>
     <q-layout view="hHh Lpr lFf">
-        <q-drawer v-model="leftDrawerOpen" show-if-above content-class="main-sidebar bg-white text-grey-8" elevated>
+        <q-drawer v-model="leftDrawerOpen" show-if-above content-class="main-sidebar bg-grey-4 text-grey-8">
             <q-list padding>
                 <q-item clickable v-ripple class="sidebar-brand" :to="{ name: 'Dashboard' }">
                     <q-item-section avatar class="q-pa-none">
@@ -102,6 +102,18 @@
         </q-drawer>
 
         <q-page-container>
+            <div class="row hidden">
+                <div class="main-nav col q-py-md q-px-lg">
+                    <div class="row reverse">
+                        <div class="col">
+                            <q-btn flat round color="standard" text-color="grey-6" icon="las la-bell">
+                                <q-tooltip transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-white text-black">Notifications</q-tooltip>
+                            </q-btn>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <slot></slot>
         </q-page-container>
     </q-layout>
@@ -148,10 +160,14 @@
 </script>
 
 <style lang="scss">
+    .main-nav {
+        border-bottom: 1px solid #CCCCCC;
+    }
+
     .main-sidebar {
         overflow-y: hidden;
 
-        background: #ebebeb !important;
+        border-right: 1px solid #CCCCCC;
         font-size: 14px !important;
         font-weight: bold;
         text-transform: uppercase;
