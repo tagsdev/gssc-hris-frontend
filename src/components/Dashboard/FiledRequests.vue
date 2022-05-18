@@ -17,11 +17,11 @@
                 </div>
 
                 <div class="q-pa-xs q-mt-md">
-                    <div v-if="rows2.length == 0" class="text-center">
-                        <em>This section is still under carefull development. Thank you for your patience.</em>
+                    <div v-if="rows.length == 0" class="text-center text-grey-6">
+                        <em>This section is still under careful development. Thank you for your patience.</em>
                     </div>
 
-                    <q-table flat v-else style="height: 350px;" :data="rows2" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
+                    <q-table flat v-else style="height: 350px;" :data="rows" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
                         <template v-slot:body="props">
                             <q-tr :props="props">
                                 <q-td key="file_date" width="10%" :props="props">
@@ -68,6 +68,9 @@
 </template>
 
 <script>
+    import axios from 'axios'
+    import Cookies from 'js-cookie'
+
     export default {
         name: 'FiledRequests',
         data() {
@@ -82,13 +85,25 @@
                     { name: 'action', align: 'left', label: '', field: 'action', sortable: false },
                 ],
                 rows: [],
-                rows2: [
-                    // { file_date: 'Jun 1, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'approved', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                    // { file_date: 'Jun 2, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'pending', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                    // { file_date: 'Jun 3, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'rejected', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                    // { file_date: 'Jun 4, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'expired', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                    // { file_date: 'Jun 5, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'expired', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                ]
+            }
+        },
+        mounted() {
+            this.getUserFiledRequests()
+        },
+        methods: {
+            getUserFiledRequests() {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                }
+
+                axios.get(`${ process.env.VUE_APP_API_URL }/user/widgets/filed-requests`, { headers })
+                    .then(response => {
+                        console.log(response.data)
+                        this.rows = response.data
+                    })
+                    .catch((error) => {
+                        console.error(error.response.data.message)
+                    });
             }
         }
     }

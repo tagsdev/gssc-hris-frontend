@@ -17,11 +17,11 @@
                 </div>
 
                 <div class="q-pa-xs q-mt-md">
-                    <div v-if="rows2.length == 0" class="text-center">
-                        <em>This section is still under carefull development. Thank you for your patience.</em>
+                    <div v-if="rows.length == 0" class="text-center text-grey-6">
+                        <em>This section is still under careful development. Thank you for your patience.</em>
                     </div>
 
-                    <q-table flat v-else style="height: 350px;" :data="rows2" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
+                    <q-table flat v-else style="height: 350px;" :data="rows" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
                         <template v-slot:body="props">
                             <q-tr :props="props">
                                 <q-td key="date" width="10%" :props="props">
@@ -51,6 +51,9 @@
 </template>
 
 <script>
+    import axios from 'axios'
+    import Cookies from 'js-cookie'
+
     export default {
         name: 'ResolutionCenter',
         data () {
@@ -61,12 +64,25 @@
                     { name: 'action', label: ' ', field: 'fat', sortable: false },
                 ],
                 rows: [],
-                rows2: [
-                    // { date: 'May 13, 2022', remarks: "Missing Clock-Out", action: "", },
-                    // { date: 'May 12, 2022', remarks: "Missing Clock-Out", action: "", },
-                    // { date: 'May 12, 2022', remarks: "Missing Clock-In", action: "", },
-                    // { date: 'May 11, 2022', remarks: "Missing Clock-Out", action: "", },
-                ]
+            }
+        },
+        mounted() {
+            this.getUserResolution()
+        },
+        methods: {
+            getUserResolution() {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                }
+
+                axios.get(`${ process.env.VUE_APP_API_URL }/user/widgets/resolution-center`, { headers })
+                    .then(response => {
+                        console.log(response.data)
+                        this.rows = response.data
+                    })
+                    .catch((error) => {
+                        console.error(error.response.data.message)
+                    });
             }
         }
     }

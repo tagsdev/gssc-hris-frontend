@@ -1,19 +1,19 @@
 <template>
     <q-page padding :class="$route.name" class="q-pa-lg bg-grey-4">
         <div class="row justify-evenly">
-            <div class="col-xs-12 col-md-8 q-mb-xl">
+            <div class="col-xs-12 col-md-8 q-mb-lg">
                 <leaves></leaves>
             </div>
 
-            <div class="col-xs-12 col-md-4 q-mb-xl">
+            <div class="col-xs-12 col-md-4 q-mb-lg">
                 <time-clock></time-clock>
             </div>
 
-            <div class="col-xs-12 col-md-6 q-mb-xl">
+            <div class="col-xs-12 col-md-6 q-mb-lg">
                 <resolution-center></resolution-center>
             </div>
 
-            <div class="col-xs-12 col-md-6 q-mb-xl">
+            <div class="col-xs-12 col-md-6 q-mb-lg">
                 <team-leave-tracker></team-leave-tracker>
             </div>
 

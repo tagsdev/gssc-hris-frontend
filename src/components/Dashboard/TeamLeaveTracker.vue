@@ -17,11 +17,11 @@
                 </div>
 
                 <div class="q-pa-xs q-mt-md">
-                    <div v-if="rows2.length == 0" class="text-center">
-                        <em>This section is still under carefull development. Thank you for your patience.</em>
+                    <div v-if="rows.length == 0" class="text-center text-grey-6">
+                        <em>This section is still under careful development. Thank you for your patience.</em>
                     </div>
 
-                    <q-table flat v-else style="height: 350px;" :data="rows2" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
+                    <q-table flat v-else style="height: 350px;" :data="rows" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
                         <template v-slot:body="props">
                             <q-tr :props="props">
                                 <q-td key="date" width="10%" :props="props">
@@ -53,6 +53,9 @@
 </template>
 
 <script>
+    import axios from 'axios'
+    import Cookies from 'js-cookie'
+
     export default {
         name: 'TeamLeaveTracker',
         data() {
@@ -63,13 +66,25 @@
                     { name: 'reason', align: 'left', label: 'reason', field: 'reason', sortable: false },
                 ],
                 rows: [],
-                rows2: [
-                    // { date: 'May 19, 2022', name: "Gio Rodriguez", type: "SL", reason: "Job Interview.", },
-                    // { date: 'May 20, 2022', name: "Juan Dela Cruz", type: "VL", reason: "Personal Errands.", },
-                    // { date: 'May 30, 2022', name: "John Doe", type: "SL", reason: "I'm sick of these!", },
-                    // { date: 'May 31, 2022', name: "Monkey D. Luffy", type: "EL", reason: "Taking down Kaido.", },
-                    // { date: 'May 31, 2022', name: "Eren Yaeger", type: "EL", reason: "Need to go to Marley ASAP for The Tumbling.", },
-                ]
+            }
+        },
+        mounted() {
+            this.getTeamLeaveTracker()
+        },
+        methods: {
+            getTeamLeaveTracker() {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                }
+
+                axios.get(`${ process.env.VUE_APP_API_URL }/user/widgets/leave-tracker`, { headers })
+                    .then(response => {
+                        console.log(response.data)
+                        this.rows = response.data
+                    })
+                    .catch((error) => {
+                        console.error(error.response.data.message)
+                    });
             }
         }
     }
