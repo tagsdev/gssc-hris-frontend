@@ -34,8 +34,8 @@
             <div class="col-xs-12 q-pt-lg">
                 <FullCalendar :options="calendarOptions">
                     <template v-slot:eventContent='arg'>
-                        <code class="float-left">{{ arg.event.title.split('|')[0] }}</code>
-                        <code class="float-right">{{ arg.event.title.split('|')[1] }}</code>
+                        <span class="float-left">{{ arg.event.title.split('|')[0] }}</span>
+                        <span class="float-right">{{ arg.event.title.split('|')[1] }}</span>
                     </template>
                 </FullCalendar>
             </div>

@@ -3,6 +3,7 @@ import Vue from 'vue'
 import './styles/quasar.scss'
 import '@quasar/extras/roboto-font/roboto-font.css'
 import '@quasar/extras/material-icons/material-icons.css'
+import '@quasar/extras/line-awesome/line-awesome.css'
 import { Quasar, Notify, Dialog } from 'quasar'
 
 Vue.use(Quasar, {
@@ -17,4 +18,7 @@ Vue.use(Quasar, {
             position: 'bottom-right',
         }
     },
+    framework: {
+        cssAddon: true,
+    }
 })

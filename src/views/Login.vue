@@ -10,7 +10,7 @@
                     <q-input
                         @focus="activeInput.username = true"
                         @blur="activeInput.username = false"
-                        v-model="loginForm.username" 
+                        v-model="loginForm.username"
                         borderless
                         color="secondary"
                         label="Username or Email Address"
@@ -22,10 +22,10 @@
                         </template>
                     </q-input>
 
-                    <q-input 
+                    <q-input
                         @focus="activeInput.password = true"
                         @blur="activeInput.password = false"
-                        v-model="loginForm.password" 
+                        v-model="loginForm.password"
                         borderless
                         color="secondary"
                         label="Password"
@@ -92,6 +92,7 @@
                         Cookies.set('accessToken', response.data.access_token)
                         Cookies.set('authName', response.data.user.DisplayName)
                         Cookies.set('jsPermissions', response.data.jsPermissions)
+                        Cookies.set('leaves', JSON.stringify(response.data.leaves))
 
                         if (response.data.latestPunch) {
                             Cookies.set('userLatestTap', response.data.latestPunch.tap == 'I' ? "Timed In" : "Timed Out")

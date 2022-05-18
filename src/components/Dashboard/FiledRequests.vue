@@ -1,0 +1,213 @@
+<template>
+    <div class="row q-col-gutter-lg q-mr-md">
+        <div class="col">
+            <q-card dark class="bg-white text-black q-pa-md filed-requests-icons">
+                <div class="row">
+                    <div class="col self-center">
+                        <div class="float-left">
+                            <div class="card-icon text-white bg-purple-8">
+                                <q-icon style="display: inline;" class="text-purple-2" name="las la-file-invoice" />
+                            </div>
+                        </div>
+
+                        <div class="q-pt-lg">
+                            <span class="q-pl-md title">Filed Requests</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-pa-xs q-mt-md">
+                    <div v-if="rows2.length == 0" class="text-center">
+                        <em>This section is still under carefull development. Thank you for your patience.</em>
+                    </div>
+
+                    <q-table flat v-else style="height: 350px;" :data="rows2" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
+                        <template v-slot:body="props">
+                            <q-tr :props="props">
+                                <q-td key="file_date" width="10%" :props="props">
+                                    {{ props.row.file_date }}
+                                </q-td>
+
+                                <q-td key="type" width="10%" :props="props">
+                                    {{ props.row.type }}
+                                </q-td>
+
+                                <q-td key="remarks" width="40%" :props="props">
+                                    {{ props.row.remarks }}
+                                </q-td>
+
+                                <q-td key="status" :props="props">
+                                    <span class="badge q-mr-xs" :class="{
+                                        'badge-green': props.row.status == 'approved',
+                                        'badge-danger': props.row.status == 'rejected',
+                                        'badge-primary': props.row.status == 'pending',
+                                        'badge-default': props.row.status == 'expired',
+                                    }">
+                                        {{ props.row.status }}
+                                    </span>
+                                </q-td>
+
+                                <q-td key="applicable_date" :props="props">
+                                    {{ props.row.applicable_date }}
+                                </q-td>
+
+                                <q-td key="approver" :props="props">
+                                    {{ props.row.approver }}
+                                </q-td>
+
+                                <q-td key="action" :props="props">
+                                    &nbsp;
+                                </q-td>
+                            </q-tr>
+                        </template>
+                    </q-table>
+                </div>
+            </q-card>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: 'FiledRequests',
+        data() {
+            return {
+                columns: [
+                    { name: 'file_date', required: true, label: 'Filed Date', align: 'right', field: row => row.file_date, format: val => `${val}`, sortable: false },
+                    { name: 'type', align: 'left', label: 'Request Type', field: 'type', sortable: false },
+                    { name: 'remarks', align: 'left', label: 'Remarks', field: 'remarks', sortable: false },
+                    { name: 'status', align: 'center', label: 'Status', field: 'status', sortable: false },
+                    { name: 'applicable_date', align: 'right', label: 'Applicable Date', field: 'applicable_date', sortable: false },
+                    { name: 'approver', align: 'left', label: 'Approver', field: 'approver', sortable: false },
+                    { name: 'action', align: 'left', label: '', field: 'action', sortable: false },
+                ],
+                rows: [],
+                rows2: [
+                    // { file_date: 'Jun 1, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'approved', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 2, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'pending', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 3, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'rejected', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 4, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'expired', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 5, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'expired', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                ]
+            }
+        }
+    }
+</script>
+
+<style lang="scss">
+    .filed-requests-icons {
+        padding: 2rem;
+
+        border-radius: 2rem;
+        box-shadow: 0px 20px 20px -5px rgba(0, 0, 0, 0.2);
+
+        .card-icon {
+            display: inline-block;
+            height: 70px;
+            width: 70px;
+            padding: 0.75rem;
+
+            border-radius: 1rem !important;
+            box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.5);
+            font-size: 3rem;
+            text-align: center;
+        }
+
+        .title {
+            margin-left: 1rem;
+
+            color: #555555;
+            font-size: 150%;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .accent {
+            position: absolute;
+            width: 80%;
+            height: 30px;
+            top: 0;
+            left: 10%;
+
+            border-radius: 0 0 2rem 2rem !important;
+            box-shadow: inset 0px -5px 5px 0px rgba(0, 0, 0, 0.25);
+
+            &::before {
+                content: "";
+            }
+
+            &.accent-primary {
+                background: var(--q-color-primary);
+            }
+        }
+
+        h3 {
+            margin-bottom: 1rem !important;
+            margin-top: 1rem !important;
+
+            font-weight: 500;
+        }
+
+        > i {
+            font-size: 3rem;
+        }
+
+        .q-table--horizontal-separator tbody tr td,
+        .q-table--cell-separator tbody tr td {
+            border-bottom-width: 0 !important;
+        }
+
+        .q-table__bottom {
+            padding-top: 1rem;
+
+            border: none !important;
+        }
+
+        .q-table {
+            tr {
+                th {
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+            }
+        }
+
+        .customEllipsis {
+            display: inline-block;
+            vertical-align: top;
+
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .badge {
+            padding: 0.15rem 0.5rem;
+
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+
+            &.badge-primary {
+                background: rgba(0, 117, 184, 0.075);
+                color: var(--q-color-primary);
+            }
+
+            &.badge-danger {
+                background: rgba(193, 0, 21, 0.075);
+                color: var(--q-color-negative);
+            }
+
+            &.badge-green {
+                background: rgba(37, 197, 157, 0.075);
+                color: rgba(37, 197, 157, 1);
+            }
+
+            &.badge-default {
+                background: rgba(50, 50, 50, 0.15);
+                color: rgba(50, 50, 50, 0.5);
+            }
+        }
+    }
+</style>

@@ -1,8 +1,24 @@
 <template>
-    <q-page padding :class="$route.name" class="q-pa-lg">
-        <div class="row reverse">
-            <div class="col-xs-12 col-sm-8 col-md-6 col-xl-4 q-pl-md inoutclockCol">
+    <q-page padding :class="$route.name" class="q-pa-lg bg-grey-4">
+        <div class="row justify-evenly">
+            <div class="col-xs-12 col-md-8 q-mb-xl">
+                <leaves></leaves>
+            </div>
+
+            <div class="col-xs-12 col-md-4 q-mb-xl">
                 <time-clock></time-clock>
+            </div>
+
+            <div class="col-xs-12 col-md-6 q-mb-xl">
+                <resolution-center></resolution-center>
+            </div>
+
+            <div class="col-xs-12 col-md-6 q-mb-xl">
+                <team-leave-tracker></team-leave-tracker>
+            </div>
+
+            <div class="col-xs-12 q-mb-xl">
+                <filed-requests></filed-requests>
             </div>
         </div>
     </q-page>
@@ -12,19 +28,11 @@
     export default {
         name: 'Dashboard',
         components: {
-            TimeClock: () => import('../components/Dashboard/TimeClock')
+            TimeClock: () => import('../components/Dashboard/TimeClock'),
+            Leaves: () => import('../components/Dashboard/Leaves'),
+            ResolutionCenter: () => import('../components/Dashboard/ResolutionCenter'),
+            TeamLeaveTracker: () => import('../components/Dashboard/TeamLeaveTracker'),
+            FiledRequests: () => import('../components/Dashboard/FiledRequests'),
         }
     }
 </script>
-
-<style lang="scss">
-    @media screen and (max-width: 480px) {
-        .Dashboard {
-            padding: 24px 0;
-        }
-
-        .inoutclockCol {
-            padding: 0 12px;
-        }
-    }
-</style>
