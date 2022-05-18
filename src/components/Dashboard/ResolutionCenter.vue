@@ -17,8 +17,8 @@
                 </div>
 
                 <div class="q-pa-xs q-mt-md">
-                    <div v-if="rows2.length == 0" class="">
-                        yay
+                    <div v-if="rows2.length == 0" class="text-center">
+                        <em>This section is still under carefull development. Thank you for your patience.</em>
                     </div>
 
                     <q-table flat v-else style="height: 350px;" :data="rows2" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
@@ -62,10 +62,10 @@
                 ],
                 rows: [],
                 rows2: [
-                    { date: 'May 13, 2022', remarks: "Missing Clock-Out", action: "", },
-                    { date: 'May 12, 2022', remarks: "Missing Clock-Out", action: "", },
-                    { date: 'May 12, 2022', remarks: "Missing Clock-In", action: "", },
-                    { date: 'May 11, 2022', remarks: "Missing Clock-Out", action: "", },
+                    // { date: 'May 13, 2022', remarks: "Missing Clock-Out", action: "", },
+                    // { date: 'May 12, 2022', remarks: "Missing Clock-Out", action: "", },
+                    // { date: 'May 12, 2022', remarks: "Missing Clock-In", action: "", },
+                    // { date: 'May 11, 2022', remarks: "Missing Clock-Out", action: "", },
                 ]
             }
         }

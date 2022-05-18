@@ -17,8 +17,8 @@
                 </div>
 
                 <div class="q-pa-xs q-mt-md">
-                    <div v-if="rows2.length == 0" class="">
-                        yay
+                    <div v-if="rows2.length == 0" class="text-center">
+                        <em>This section is still under carefull development. Thank you for your patience.</em>
                     </div>
 
                     <q-table flat v-else style="height: 350px;" :data="rows2" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
@@ -83,11 +83,11 @@
                 ],
                 rows: [],
                 rows2: [
-                    { file_date: 'Jun 1, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'approved', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                    { file_date: 'Jun 2, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'pending', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                    { file_date: 'Jun 3, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'rejected', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                    { file_date: 'Jun 4, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'expired', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
-                    { file_date: 'Jun 5, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'expired', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 1, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'approved', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 2, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'pending', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 3, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'rejected', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 4, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'expired', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
+                    // { file_date: 'Jun 5, 2022', type: 'Change Rest Day', remarks: 'lorem ipsum', status: 'expired', applicable_date: 'Apr 6, 2022', approver: 'John Doe', action: '', },
                 ]
             }
         }

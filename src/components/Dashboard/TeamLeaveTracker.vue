@@ -17,8 +17,8 @@
                 </div>
 
                 <div class="q-pa-xs q-mt-md">
-                    <div v-if="rows2.length == 0" class="">
-                        yay
+                    <div v-if="rows2.length == 0" class="text-center">
+                        <em>This section is still under carefull development. Thank you for your patience.</em>
                     </div>
 
                     <q-table flat v-else style="height: 350px;" :data="rows2" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
@@ -64,11 +64,11 @@
                 ],
                 rows: [],
                 rows2: [
-                    { date: 'May 19, 2022', name: "Gio Rodriguez", type: "SL", reason: "Job Interview.", },
-                    { date: 'May 20, 2022', name: "Juan Dela Cruz", type: "VL", reason: "Personal Errands.", },
-                    { date: 'May 30, 2022', name: "John Doe", type: "SL", reason: "I'm sick of these!", },
-                    { date: 'May 31, 2022', name: "Monkey D. Luffy", type: "EL", reason: "Taking down Kaido.", },
-                    { date: 'May 31, 2022', name: "Eren Yaeger", type: "EL", reason: "Need to go to Marley ASAP for The Tumbling.", },
+                    // { date: 'May 19, 2022', name: "Gio Rodriguez", type: "SL", reason: "Job Interview.", },
+                    // { date: 'May 20, 2022', name: "Juan Dela Cruz", type: "VL", reason: "Personal Errands.", },
+                    // { date: 'May 30, 2022', name: "John Doe", type: "SL", reason: "I'm sick of these!", },
+                    // { date: 'May 31, 2022', name: "Monkey D. Luffy", type: "EL", reason: "Taking down Kaido.", },
+                    // { date: 'May 31, 2022', name: "Eren Yaeger", type: "EL", reason: "Need to go to Marley ASAP for The Tumbling.", },
                 ]
             }
         }
