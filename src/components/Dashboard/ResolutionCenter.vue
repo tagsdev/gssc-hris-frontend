@@ -29,7 +29,7 @@
                                 </q-td>
 
                                 <q-td key="remarks" :props="props">
-                                    {{ props.row.remarks }}
+                                    <span class="text-weight-bold">{{ props.row.remarks }}</span>
                                 </q-td>
 
                                 <q-td key="action" class="text-right" :props="props">
