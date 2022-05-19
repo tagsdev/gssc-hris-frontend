@@ -29,7 +29,7 @@
                                 </q-td>
 
                                 <q-td key="type" width="10%" :props="props">
-                                    {{ props.row.type }}
+                                    <span class="text-weight-bold">{{ props.row.type }}</span>
                                 </q-td>
 
                                 <q-td key="remarks" width="40%" :props="props">
