@@ -36,10 +36,6 @@
                                     <q-btn flat round color="standard" text-color="grey-6" icon="las la-edit" size="md" padding="xs">
                                         <q-tooltip transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-grey-12 text-black">Edit Request</q-tooltip>
                                     </q-btn>
-
-                                    <q-btn flat round color="standard" text-color="grey-6" icon="las la-trash-alt" size="md" padding="xs">
-                                        <q-tooltip transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-negative">Delete Request</q-tooltip>
-                                    </q-btn>
                                 </q-td>
                             </q-tr>
                         </template>
