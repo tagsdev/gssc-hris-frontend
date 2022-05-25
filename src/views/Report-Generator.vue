@@ -64,6 +64,9 @@
                     }, {
                         label: 'Employee Payroll Complaints',
                         value: 'payroll_complaints',
+                    }, {
+                        label: 'Past Cut-Off Leaves',
+                        value: 'past_leaves',
                     },
                 ],
             }
