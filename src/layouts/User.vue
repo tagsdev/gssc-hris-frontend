@@ -83,6 +83,16 @@
                     </q-item-section>
                 </q-item>
 
+                <q-item v-if="can('export-employee-attendance')" clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Report-Generator' }">
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="lar la-file-archive" />
+                    </q-item-section>
+
+                    <q-item-section>
+                        <q-item-label>Report Generator</q-item-label>
+                    </q-item-section>
+                </q-item>
+
                 <!-- Add more link items here -->
 
                 <q-item clickable class="fixed-bottom text-black" active-class="sidebar-link--active" v-ripple @click="logout">
@@ -122,6 +132,10 @@
 <script>
     import axios from 'axios'
     import Cookies from 'js-cookie'
+
+    window.Laravel = {
+        jsPermissions: JSON.parse(Cookies.get('jsPermissions'))
+    }
 
     export default {
         name: 'UserLayout',

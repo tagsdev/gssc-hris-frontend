@@ -5,6 +5,7 @@ module.exports = {
             rtlSupport: true
         }
     },
+    filenameHashing: true,
     transpileDependencies: [
         'quasar'
     ]
