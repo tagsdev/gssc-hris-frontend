@@ -41,8 +41,18 @@
                     no-data-label="No data found"
                     :row-key="row_key"
                     @row-click="selectedRow"
+                    :filter="filter"
+                    :filter-method="customFilter"
                     selection="single"
                     :selected.sync="selected">
+                        <template v-slot:top-right>
+                            <q-input borderless dense debounce="300" v-model="search" placeholder="Search">
+                                <template v-slot:append>
+                                    <q-icon name="search" />
+                                </template>
+                            </q-input>
+                        </template>
+
                         <template v-slot:loading>
                             <q-inner-loading showing color="primary" />
                         </template>
@@ -90,6 +100,7 @@
                     to: ''
                 },
                 row_key: "",
+                search: "",
                 selected: [],
                 rowsOptions: [5, 10, 15, 20, 50, 0],
                 pagination: {
@@ -123,7 +134,46 @@
                 ],
             }
         },
+        computed: {
+            filter() {
+                return {
+                    search: this.search
+                }
+            }
+        },
         methods: {
+            customFilter(rows, terms){
+                let lowerSearch = terms.search ? terms.search.toLowerCase() : ""
+
+                const filteredRows = rows.filter((row, i) => {
+                    let ans = false
+                    let s1 = true
+
+                    if(lowerSearch != ""){
+                        s1 = false
+
+                        let s1_values = Object.values(row)
+                        let s1_lower = s1_values.map((x) => {
+                            if (x !== null && x.length > 0) {
+                                return x.toString().toLowerCase()
+                            }
+                        })
+
+                        for (let val = 0; val < s1_lower.length; val++){
+                            if (typeof s1_lower[val] !== 'undefined' && s1_lower[val].toString() != '' && s1_lower[val].toString().includes(lowerSearch)){
+                                s1 = true
+                                break
+                            }
+                        }
+                    }
+
+                    ans = s1 ? true : false
+
+                    return ans
+                })
+
+                return filteredRows
+            },
             selectedRow (val, _props) {
                 this.selected.splice(0, 1)
                 this.selected.push(val)
