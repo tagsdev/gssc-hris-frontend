@@ -98,7 +98,6 @@
 
                 axios.get(`${ process.env.VUE_APP_API_URL }/user/widgets/filed-requests`, { headers })
                     .then(response => {
-                        console.log(response.data)
                         this.rows = response.data
                     })
                     .catch((error) => {

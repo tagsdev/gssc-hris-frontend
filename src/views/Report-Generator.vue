@@ -132,6 +132,13 @@
                         value: 'past_leaves',
                     },
                 ],
+                filter_column: {
+                    attendance_raw: 'Employee ID Number',
+                    attendance_processed: '"Employee ID"',
+                    amsasb: 'ADEMID',
+                    payroll_complaints: '"Employee ID"',
+                    past_leaves: 'LBREMID',
+                },
             }
         },
         computed: {
@@ -161,7 +168,12 @@
                         })
 
                         for (let val = 0; val < s1_lower.length; val++){
-                            if (typeof s1_lower[val] !== 'undefined' && s1_lower[val].toString() != '' && s1_lower[val].toString().includes(lowerSearch)){
+                            if (typeof s1_lower[val] !== 'undefined'
+                                && row[this.filter_column[this.report_type.value]] !== null
+                                && row[this.filter_column[this.report_type.value]].toString().length > 0
+                                && row[this.filter_column[this.report_type.value]].toString() != ''
+                                && row[this.filter_column[this.report_type.value]].toString().includes(lowerSearch)
+                            ){
                                 s1 = true
                                 break
                             }
