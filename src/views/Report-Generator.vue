@@ -43,7 +43,7 @@
                     @row-click="selectedRow"
                     :filter="filter"
                     :filter-method="customFilter"
-                    selection="single"
+                    selection="multiple"
                     :selected.sync="selected">
                         <template v-slot:top-right>
                             <q-input borderless dense debounce="300" v-model="search" placeholder="Search">
@@ -68,7 +68,7 @@
                         <template v-slot:body="props">
                             <q-tr class="cursor-pointer" :props="props" @click="selectedRow(props.row, props)">
                                 <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                                    {{ props.row[col.name] }}
+                                    {{ (props.row[col.name] !== null && !isNaN(props.row[col.name]) && props.row[col.name].toString().indexOf('.') != -1) ? parseFloat(props.row[col.name]).toFixed(2) : props.row[col.name] }}
                                 </q-td>
                             </q-tr>
                         </template>
@@ -143,6 +143,7 @@
         },
         methods: {
             customFilter(rows, terms){
+                this.selected = []
                 let lowerSearch = terms.search ? terms.search.toLowerCase() : ""
 
                 const filteredRows = rows.filter((row, i) => {
@@ -174,15 +175,25 @@
 
                 return filteredRows
             },
-            selectedRow (val, _props) {
-                this.selected.splice(0, 1)
-                this.selected.push(val)
+            selectedRow (val) {
+                let i = 0
+                const matched = this.selected.find((item, index) => {
+                    i = index
+                    return item._row === val._row
+                })
+
+                if (matched) {
+                    this.selected.splice(i, 1)
+                } else {
+                    this.selected.push(val)
+                }
             },
             previewReport() {
                 let headers = {
                     'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                 }
 
+                this.selected = []
                 this.loadingExcelExport = true
                 this.preview.columns = []
                 this.preview.data = []
@@ -248,6 +259,7 @@
                     responseType: 'blob'
                 }
 
+                this.selected = []
                 this.loadingExcelExport = true
 
                 axios.post(`${ process.env.VUE_APP_API_URL }/hr/generate-report`, { data: this.date_range, report_type: this.report_type.value }, { headers })
@@ -302,5 +314,11 @@
     .report-container {
         border-radius: 2rem;
         box-shadow: 0px 20px 20px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    .q-table tr.selected td {
+        background: rgb(0 117 184 / 100%) !important;
+        color: #FFFFFF;
+        font-weight: bold;
     }
 </style>
