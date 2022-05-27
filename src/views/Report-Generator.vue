@@ -234,7 +234,12 @@
             },
             populateDateRange() {
                 let _format = "MMM DD, YYYY"
-                this.date_placeholder = `${ moment(this.date_range.from).format(_format) } to ${ moment(this.date_range.to).format(_format) }`
+
+                if (this.date_range.from) {
+                    this.date_placeholder = `${ moment(this.date_range.from).format(_format) } to ${ moment(this.date_range.to).format(_format) }`
+                } else {
+                    this.date_placeholder = `${ moment(this.date_range).format(_format) }`
+                }
             }
         },
         mounted() {
