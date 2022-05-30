@@ -45,7 +45,7 @@
                     :filter-method="customFilter"
                     selection="multiple"
                     :selected.sync="selected">
-                        <template v-slot:top-right>
+                        <template v-if="this.preview.data.length > 0" v-slot:top-right>
                             <q-input borderless dense debounce="300" v-model="search" placeholder="Search">
                                 <template v-slot:append>
                                     <q-icon name="search" />
