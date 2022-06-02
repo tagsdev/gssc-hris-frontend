@@ -16,16 +16,29 @@ const routes = [
         meta: { auth: true }
     },
     {
-        path: '/attendance/raw',
-        name: 'Raw',
+        path: '/attendance',
+        name: 'Attendance',
         component: () => import('../views/Attendance'),
-        meta: { auth: true }
-    },
-    {
-        path: '/attendance/processed',
-        name: 'Processed',
-        component: () => import('../views/Attendance-Processed'),
-        meta: { auth: true }
+        children: [
+            {
+                path: 'raw',
+                name: 'Raw',
+                component: () => import('../views/Attendance/Raw'),
+                meta: {
+                    auth: true,
+                    caption: 'raw'
+                }
+            },
+            {
+                path: 'processed',
+                name: 'Processed',
+                component: () => import('../views/Attendance/Processed'),
+                meta: {
+                    auth: true,
+                    caption: 'processed'
+                }
+            },
+        ],
     },
     {
         path: '/report-generator',
@@ -38,7 +51,9 @@ const routes = [
 const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
-    routes
+    routes,
+    linkActiveClass: '--active',
+    linkExactActiveClass: '--exact-active'
 })
 
 import Cookies from 'js-cookie'

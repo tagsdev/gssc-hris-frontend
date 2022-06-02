@@ -1,11 +1,14 @@
 <template>
-    <q-page padding :class="$route.name" class="q-pa-lg">
-        <div class="page-header bg-primary">
-            <h4>Attendance <q-badge color="primary" align="bottom">PROCESSED</q-badge></h4>
-        </div>
+    <q-page padding :class="$route.name" class="bg-grey-4">
+        <div class="row justify-center">
+            <div class="col-xs-12 bg-white q-px-xl q-py-xl attendance-container">
+                <div class="q-mb-lg">
+                    <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">My Attendance</h4>
+                    <small class="text-grey-6">
+                        Processed Time Ins and Outs
+                    </small>
+                </div>
 
-        <div class="row">
-            <div class="col-xs-12 q-pt-lg">
                 <FullCalendar :options="calendarOptions">
                     <template v-slot:eventContent='arg'>
                         <code class="float-left">{{ arg.event.title.split('|')[0] }}</code>
@@ -70,19 +73,16 @@
         },
         mounted() {
             this.getAttendance();
+            this.$store.attendance_caption = 'processed'
         }
     }
 </script>
 
 <style lang="scss">
     .Processed {
-        .page-header {
-            margin-top: -25px;
-            padding: 5px 50px;
-            width: 100%;
-
-            border-radius: 0px 0px 20px 20px;
-            color: #FFFFFF;
+        .attendance-container {
+            border-radius: 2rem;
+            box-shadow: 0px 20px 20px -5px rgba(0, 0, 0, 0.2);
         }
 
         .fc-scrollgrid {

@@ -21,66 +21,66 @@
                     </q-item-section>
                 </q-item>
 
-                <!-- <q-item clickable active-class="sidebar-link--active" v-ripple>
-                    <q-item-section avatar class="q-pa-none">
-                        <q-icon name="account_balance" />
-                    </q-item-section>
-
-                    <q-item-section>
-                        <q-item-label>Compensations</q-item-label>
-                    </q-item-section>
-                </q-item> -->
-
-                <!-- <q-item clickable active-class="sidebar-link--active" v-ripple>
-                    <q-item-section avatar class="q-pa-none">
-                        <q-icon name="account_balance" />
-                    </q-item-section>
-
-                    <q-item-section>
-                        <q-item-label>Benefits</q-item-label>
-                    </q-item-section>
-                </q-item> -->
-
-                <!-- <q-item clickable active-class="sidebar-link--active" v-ripple>
-                    <q-item-section avatar class="q-pa-none">
-                        <q-icon name="account_balance" />
-                    </q-item-section>
-
-                    <q-item-section>
-                        <q-item-label>Payroll</q-item-label>
-                    </q-item-section>
-                </q-item> -->
-
-                <!-- <q-item clickable active-class="sidebar-link--active" v-ripple>
-                    <q-item-section avatar class="q-pa-none">
-                        <q-icon name="hail" />
-                    </q-item-section>
-
-                    <q-item-section>
-                        <q-item-label>Recruitment</q-item-label>
-                    </q-item-section>
-                </q-item> -->
-
-                <q-item clickable active-class="sidebar-link--active" v-ripple :to="{ name: 'Raw' }">
+                <q-item clickable :active="clink === 'attendance'" active-class="practice" :class="{ 'sidebar-link--active': $route.path.includes('attendance') }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="today" />
                     </q-item-section>
 
                     <q-item-section>
                         <q-item-label>Attendance</q-item-label>
-                        <q-item-label caption>Raw</q-item-label>
+                        <q-item-label caption>{{ $route.path.includes('attendance') ? $route.meta.caption : '' }}</q-item-label>
                     </q-item-section>
+
+                    <q-menu @show="clink = 'attendance'" @hide="clink = ''" anchor="top end" self="top start" transition-show="scale" transition-hide="scale">
+                        <q-list style="min-width: 250px;">
+                            <q-item clickable :to="{ name: 'Raw' }">
+                                <q-item-section>Raw</q-item-section>
+                            </q-item>
+
+                            <q-item clickable :to="{ name: 'Processed' }">
+                                <q-item-section>Processed</q-item-section>
+                            </q-item>
+                        </q-list>
+                    </q-menu>
                 </q-item>
 
-                <q-item clickable active-class="sidebar-link--active" v-ripple :to="{ name: 'Processed' }">
+                <q-item clickable :active="clink === 'file_request'" active-class="practice">
                     <q-item-section avatar class="q-pa-none">
-                        <q-icon name="today" />
+                        <q-icon name="las la-file-invoice" />
                     </q-item-section>
 
                     <q-item-section>
-                        <q-item-label>Attendance</q-item-label>
-                        <q-item-label caption>Processed</q-item-label>
+                        <q-item-label>File Requests</q-item-label>
+                        <q-item-label caption>{{ $route.path.includes('asd') ? $route.meta.caption : '' }}</q-item-label>
                     </q-item-section>
+
+                    <q-menu @show="clink = 'file_request'" @hide="clink = ''" anchor="top end" self="top start">
+                        <q-list style="min-width: 250px;">
+                            <q-item clickable>
+                                <q-item-section>Leaves</q-item-section>
+                            </q-item>
+
+                            <q-item clickable>
+                                <q-item-section>Official Business</q-item-section>
+                            </q-item>
+
+                            <q-item clickable>
+                                <q-item-section>Overtime</q-item-section>
+                            </q-item>
+
+                            <q-item clickable>
+                                <q-item-section>Change Shift</q-item-section>
+                            </q-item>
+
+                            <q-item clickable>
+                                <q-item-section>Change Rest Day</q-item-section>
+                            </q-item>
+
+                            <q-item clickable>
+                                <q-item-section>Payroll Complaints</q-item-section>
+                            </q-item>
+                        </q-list>
+                    </q-menu>
                 </q-item>
 
                 <q-item v-if="can('export-employee-attendance')" clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Report-Generator' }">
@@ -142,7 +142,8 @@
         data () {
             return {
                 leftDrawerOpen: false,
-                authName: ""
+                authName: "",
+                clink: '',
             }
         },
         methods: {
@@ -176,6 +177,11 @@
 <style lang="scss">
     .main-nav {
         border-bottom: 1px solid #CCCCCC;
+    }
+
+    .practice {
+        background: #c0c9d5 !important;
+        color: #0d4c8f !important;
     }
 
     .main-sidebar {
@@ -222,6 +228,30 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+    }
+
+    .q-menu {
+        .q-item {
+            transition: 0.2s ease;
+
+            &.q-router-link--active {
+                padding-left: 2rem;
+
+                box-shadow: inset 5px 0px 0px 0px var(--q-color-primary);
+                color: #444444;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            &:hover {
+                padding-left: 2rem;
+
+                font-weight: bold;
+                text-transform: uppercase;
+
+                transition: 0.2s ease;
+            }
         }
     }
 </style>
