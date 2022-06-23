@@ -4,9 +4,9 @@
             <div class="col-xs-12 bg-white q-px-xl q-py-xl attendance-container">
                 <div class="q-mb-lg">
                     <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">My Attendance</h4>
-                    <small class="text-grey-6">
+                    <span class="text-grey-6">
                         Processed Time Ins and Outs
-                    </small>
+                    </span>
                 </div>
 
                 <FullCalendar :options="calendarOptions">
@@ -72,8 +72,7 @@
             },
         },
         mounted() {
-            this.getAttendance();
-            this.$store.attendance_caption = 'processed'
+            this.getAttendance()
         }
     }
 </script>

@@ -21,7 +21,7 @@
                     </q-item-section>
                 </q-item>
 
-                <q-item clickable :active="clink === 'attendance'" active-class="practice" :class="{ 'sidebar-link--active': $route.path.includes('attendance') }">
+                <q-item clickable :active="clink === 'attendance'" active-class="semi-active" :class="{ 'sidebar-link--active': $route.path.includes('attendance') }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="today" />
                     </q-item-section>
@@ -31,8 +31,8 @@
                         <q-item-label caption>{{ $route.path.includes('attendance') ? $route.meta.caption : '' }}</q-item-label>
                     </q-item-section>
 
-                    <q-menu @show="clink = 'attendance'" @hide="clink = ''" anchor="top end" self="top start" transition-show="scale" transition-hide="scale">
-                        <q-list style="min-width: 250px;">
+                    <q-menu @show="clink = 'attendance'" @hide="clink = ''" anchor="top end" self="top start">
+                        <q-list style="min-width: 250px;" class="_submenu">
                             <q-item clickable :to="{ name: 'Raw' }">
                                 <q-item-section>Raw</q-item-section>
                             </q-item>
@@ -44,43 +44,70 @@
                     </q-menu>
                 </q-item>
 
-                <q-item clickable :active="clink === 'file_request'" active-class="practice">
+                <q-item clickable :active="clink === 'file_request'" active-class="semi-active" :class="{ 'sidebar-link--active': $route.path.includes('requests') }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="las la-file-invoice" />
                     </q-item-section>
 
                     <q-item-section>
                         <q-item-label>File Requests</q-item-label>
-                        <q-item-label caption>{{ $route.path.includes('asd') ? $route.meta.caption : '' }}</q-item-label>
+                        <q-item-label caption>{{ $route.path.includes('requests') ? $route.meta.caption : '' }}</q-item-label>
                     </q-item-section>
 
                     <q-menu @show="clink = 'file_request'" @hide="clink = ''" anchor="top end" self="top start">
-                        <q-list style="min-width: 250px;">
-                            <q-item clickable>
+                        <q-list style="min-width: 250px;" class="_submenu">
+                            <q-item clickable :to="{ name: 'Leaves' }">
                                 <q-item-section>Leaves</q-item-section>
                             </q-item>
 
-                            <q-item clickable>
+                            <q-item clickable :to="{ name: 'OB' }">
                                 <q-item-section>Official Business</q-item-section>
                             </q-item>
 
-                            <q-item clickable>
+                            <q-item clickable disabled>
                                 <q-item-section>Overtime</q-item-section>
+
+                                <q-item-section side center>
+                                    <q-icon name="las la-wrench" color="grey-6" />
+                                </q-item-section>
                             </q-item>
 
-                            <q-item clickable>
+                            <q-item clickable disabled>
                                 <q-item-section>Change Shift</q-item-section>
+
+                                <q-item-section side center>
+                                    <q-icon name="las la-wrench" color="grey-6" />
+                                </q-item-section>
                             </q-item>
 
-                            <q-item clickable>
+                            <q-item clickable disabled>
                                 <q-item-section>Change Rest Day</q-item-section>
+
+                                <q-item-section side center>
+                                    <q-icon name="las la-wrench" color="grey-6" />
+                                </q-item-section>
                             </q-item>
 
-                            <q-item clickable>
+                            <q-item clickable disabled>
                                 <q-item-section>Payroll Complaints</q-item-section>
+
+                                <q-item-section side center>
+                                    <q-icon name="las la-wrench" color="grey-6" />
+                                </q-item-section>
                             </q-item>
                         </q-list>
                     </q-menu>
+                </q-item>
+
+                <!-- approve filed requests -->
+                <q-item v-if="can('export-employee-attendance')" clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Request-Approval' }">
+                    <q-item-section avatar class="q-pa-none">
+                        <q-icon name="las la-tasks" />
+                    </q-item-section>
+
+                    <q-item-section>
+                        <q-item-label>Request Approval</q-item-label>
+                    </q-item-section>
                 </q-item>
 
                 <q-item v-if="can('export-employee-attendance')" clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Report-Generator' }">
@@ -179,9 +206,14 @@
         border-bottom: 1px solid #CCCCCC;
     }
 
-    .practice {
+    .semi-active {
         background: #c0c9d5 !important;
         color: #0d4c8f !important;
+    }
+
+    .text-caption {
+        color: #000000;
+        font-weight: bolder !important;
     }
 
     .main-sidebar {
@@ -231,24 +263,22 @@
         }
     }
 
-    .q-menu {
-        .q-item {
+    ._submenu {
+        .q-item:not([disabled]) {
             transition: 0.2s ease;
 
             &.q-router-link--active {
                 padding-left: 2rem;
 
                 box-shadow: inset 5px 0px 0px 0px var(--q-color-primary);
-                color: #444444;
-                font-weight: bold;
-                text-transform: uppercase;
+                color: #444444 !important;
+                font-weight: bold !important;
             }
 
             &:hover {
-                padding-left: 2rem;
+                padding-left: 1.5rem;
 
                 font-weight: bold;
-                text-transform: uppercase;
 
                 transition: 0.2s ease;
             }

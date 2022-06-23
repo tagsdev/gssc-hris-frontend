@@ -4,9 +4,9 @@
             <div class="col-xs-12 bg-white q-px-xl q-py-xl attendance-container">
                 <div class="q-mb-lg">
                     <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">My Attendance</h4>
-                    <small class="text-grey-6">
+                    <span class="text-grey-6">
                         Raw Time Ins and Outs
-                    </small>
+                    </span>
                 </div>
 
                 <FullCalendar :options="calendarOptions">
@@ -72,8 +72,7 @@
             },
         },
         mounted() {
-            this.getAttendance();
-            this.$store.attendance_caption = 'raw'
+            this.getAttendance()
         }
     }
 </script>
@@ -132,13 +131,6 @@
             .fc-daygrid-event-harness-abs {
                 right: 0 !important;
             }
-        }
-    }
-
-    .q-menu {
-        .q-item.q-router-link--active {
-            padding-left: 2rem;
-            box-shadow: inset 5px 0px 0px 0px var(--q-color-primary);
         }
     }
 </style>

@@ -18,7 +18,7 @@ const routes = [
     {
         path: '/attendance',
         name: 'Attendance',
-        component: () => import('../views/Attendance'),
+        component: () => import('../views/Parent-Container'),
         children: [
             {
                 path: 'raw',
@@ -39,6 +39,37 @@ const routes = [
                 }
             },
         ],
+    },
+    {
+        path: '/requests',
+        name: 'Requests',
+        component: () => import('../views/Parent-Container'),
+        children: [
+            {
+                path: 'leaves',
+                name: 'Leaves',
+                component: () => import('../views/Requests/Leaves'),
+                meta: {
+                    auth: true,
+                    caption: 'leaves'
+                }
+            },
+            {
+                path: 'ob',
+                name: 'OB',
+                component: () => import('../views/Requests/Official-Business'),
+                meta: {
+                    auth: true,
+                    caption: 'official business'
+                }
+            },
+        ],
+    },
+    {
+        path: '/request-approval',
+        name: 'Request-Approval',
+        component: () => import('../views/Request-Approval'),
+        meta: { auth: true }
     },
     {
         path: '/report-generator',

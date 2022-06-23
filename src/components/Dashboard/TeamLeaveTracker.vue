@@ -24,24 +24,34 @@
                     <q-table flat v-else style="height: 350px;" :data="rows" :columns="columns" :rows-per-page-options="[]" no-data-label="Widget feature is still under careful development..." row-key="date">
                         <template v-slot:body="props">
                             <q-tr :props="props">
-                                <q-td key="date" width="10%" :props="props">
-                                    {{ props.row.date }}
+                                <q-td key="date" auto-width :props="props">
+                                    <span v-if="props.row.date.from == props.row.date.to" class="text-weight-bold">{{ props.row.date.from }}</span>
+                                    <span v-else>
+                                        <span class="text-weight-bold">{{ props.row.date.from }}</span>
+                                        &nbsp; - &nbsp;
+                                        <span class="text-weight-bold">{{ props.row.date.to }}</span>
+                                    </span>
                                 </q-td>
 
                                 <q-td key="name" :props="props">
-                                    <span class="text-weight-bold">{{ props.row.name }}</span>
-                                </q-td>
-
-                                <q-td key="reason" :props="props">
-                                    <span class="badge q-mr-xs" :class="{'badge-green': props.row.type == 'SL', 'badge-danger': props.row.type == 'EL', 'badge-primary': props.row.type == 'VL'}">
-                                        <i class="las" :class="{'la-temperature-high': props.row.type == 'SL', 'la-ambulance': props.row.type == 'EL', 'la-umbrella-beach': props.row.type == 'VL'}"></i>
-                                        {{ props.row.type }}
+                                    <span class="badge q-mr-md" :class="{
+                                        'badge-green': props.row.abbr.toUpperCase() == 'SL',
+                                        'badge-danger': props.row.abbr.toUpperCase() == 'EL',
+                                        'badge-primary': props.row.abbr.toUpperCase() == 'VL',
+                                    }">
+                                        <i class="las" :class="{
+                                            'la-temperature-high': props.row.abbr.toUpperCase() == 'SL',
+                                            'la-ambulance': props.row.abbr.toUpperCase() == 'EL',
+                                            'la-umbrella-beach': props.row.abbr.toUpperCase() == 'VL',
+                                        }"></i>
+                                        {{ props.row.abbr }}
                                     </span>
 
-                                    <div style="width: 240px;" class="customEllipsis">
-                                        {{ props.row.reason }}
-                                        <q-tooltip v-if="props.row.reason.length > 30" transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-grey-12 text-black">{{ props.row.reason }}</q-tooltip>
-                                    </div>
+                                    <span class="text-weight-bold">
+                                        {{ props.row.name }}
+                                    </span>
+
+                                    <q-tooltip :content-style="{ 'font-size': '14px', 'max-width': '350px' }" transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-grey-9 text-white">{{ props.row.reason }}</q-tooltip>
                                 </q-td>
                             </q-tr>
                         </template>
@@ -61,9 +71,8 @@
         data() {
             return {
                 columns: [
-                    { name: 'date', required: true, label: 'Date', align: 'right', field: row => row.name, format: val => `${val}`, sortable: false },
+                    { name: 'date', required: true, label: 'date coverage', align: 'right', field: 'date', sortable: false },
                     { name: 'name', align: 'left', label: 'name', field: 'name', sortable: false },
-                    { name: 'reason', align: 'left', label: 'reason', field: 'reason', sortable: false },
                 ],
                 rows: [],
             }
@@ -145,13 +154,6 @@
 
         > i {
             font-size: 3rem;
-        }
-
-        .timestamp {
-            margin-bottom: 0;
-
-            color: #BBBBBB;
-            font-size: 85%;
         }
 
         .q-table--horizontal-separator tbody tr td,

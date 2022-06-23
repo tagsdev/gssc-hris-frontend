@@ -2,9 +2,9 @@
     <q-page padding :class="$route.name" class="q-pa-lg bg-grey-4">
         <div class="row justify-center">
             <div class="col-12 bg-white q-px-xl q-py-xl report-container">
-                <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Generate Report</h4>
+                <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Employee Filed Requests Approval</h4>
                 <span class="text-grey-6">
-                    Generate available HR-exclusive Reports
+                    Handle the status of requests filed by your employees.
                 </span>
 
                 <div class="row q-mt-lg">
