@@ -398,7 +398,7 @@
                 let _withAttachment = ['vacation_leave']
 
                 this.clearDate()
-                this.isDateRange = _isDateRange.includes(this.leave_type.value) && (this.isHalf == false) ? true : false
+                this.isDateRange = _isDateRange.includes(this.leave_type.value) && (this.isHalf == "wd") ? true : false
                 this.disableDayType = _withDayType.includes(this.leave_type.value) ? false : true
                 this.requireAttachment = _withAttachment.includes(this.leave_type.value) ? false : true
             },
