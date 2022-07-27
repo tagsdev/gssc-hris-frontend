@@ -357,7 +357,7 @@
 
                 this.diaLoading = true
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leave/submit`, data, { headers })
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/submit`, data, { headers })
                     .then(response => {
                         this.diaLoading = false
                         this.request_dialog = false
@@ -381,11 +381,11 @@
 
                 if (this.date_range.from) {
                     this.date_placeholder = `${ moment(this.date_range.from).format(_format) } to ${ moment(this.date_range.to).format(_format) }`
-                    this.$refs.qDateProxy.hide()
                 } else {
                     this.date_placeholder = `${ moment(this.date_range).format(_format) }`
-                    this.$refs.qDateProxy.hide()
                 }
+
+                this.$refs.qDateProxy.hide()
             },
             dateRange() {
                 this.clearDate()

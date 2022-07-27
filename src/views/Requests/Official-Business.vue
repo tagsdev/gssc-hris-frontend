@@ -231,20 +231,23 @@
 
                 let data = {
                     date: {
-                        from: this.date_range.from,
-                        to: this.date_range.to
+                        from: moment(this.date_range.from).format("MMM d, YYYY"),
+                        to: moment(this.date_range.to).format("MMM d, YYYY")
                     },
                     time: {
-                        from: this.time.from,
-                        to: this.time.to,
+                        from: moment(this.time.from, "HH:mm A").format("hh:mm A"),
+                        to: moment(this.time.to, "HH:mm A").format("hh:mm A"),
                     },
                     status: 'pending',
                     location: this.location,
                     reason: this.reason,
                 };
 
-                if (!this.isDateRange) {
-                    data.date = this.date_range
+                if (typeof this.date_range != "object") {
+                    data.date = {
+                        from: this.date_range,
+                        to: this.date_range
+                    }
                 }
 
                 this.diaLoading = true

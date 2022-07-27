@@ -38,7 +38,7 @@
                     :pagination.sync="pagination"
                     class="col my-sticky-column-table"
                     no-data-label="No data found"
-                    :row-key="row_key"
+                    row-key="_row"
                     @row-click="selectedRow"
                     :filter="filter"
                     :filter-method="customFilter"
@@ -98,7 +98,6 @@
                     from: '',
                     to: ''
                 },
-                row_key: "",
                 search: "",
                 selected: [],
                 rowsOptions: [5, 10, 15, 20, 50, 0],
@@ -240,7 +239,6 @@
                             });
 
                             this.preview.data = data
-                            this.row_key = Object.keys(data[0])[0]
                         } else {
                             Notify.create({
                                 type: 'warning',

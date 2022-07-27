@@ -7,7 +7,7 @@
                     </q-item-section>
 
                     <q-item-section>
-                        <img :src="require('../assets/images/amkor_logo.png')" alt="Amkor Logo" class="sidebar-logo" />
+                        <img :src="require('../assets/images/main.png')" alt="Amkor Logo" class="sidebar-logo" />
                     </q-item-section>
                 </q-item>
 
