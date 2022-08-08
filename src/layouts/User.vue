@@ -276,7 +276,7 @@
             }
 
             &:hover {
-                padding-left: 1.5rem;
+                padding-left: 2rem;
 
                 font-weight: bold;
 

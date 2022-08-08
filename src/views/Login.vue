@@ -1,10 +1,6 @@
 <template>
     <div class="col-6 loginCol">
         <q-card class="q-pa-lg loginCard">
-            <!-- <q-card-section class="q-pa-none">
-                <h3>Log in</h3>
-            </q-card-section> -->
-
             <q-card-section class="q-pa-none">
                 <q-form @submit.prevent="login">
                     <q-input
@@ -16,9 +12,12 @@
                         label="Username or Email Address"
                         label-color="label"
                         class="q-mb-lg"
+                        :class="{
+                            '--filled': loginForm.username != ''
+                        }"
                     >
                         <template v-slot:prepend>
-                            <q-icon :color="activeInput.username ? 'secondary' : 'label'" name="account_circle" />
+                            <q-icon :color="activeInput.username || loginForm.username != '' ? 'secondary' : 'label'" style="font-size: 1.75rem;" name="las la-user-shield" />
                         </template>
                     </q-input>
 
@@ -32,16 +31,15 @@
                         label-color="label"
                         :type="!showPassword ? 'password' : 'text'"
                         class="q-mb-lg"
+                        :class="{
+                            '--filled': loginForm.password != ''
+                        }"
                     >
                         <template v-slot:prepend>
-                            <q-icon :color="activeInput.password ? 'secondary' : 'label'" name="vpn_key" />
+                            <q-icon :color="activeInput.password || loginForm.password != '' ? 'secondary' : 'label'" style="font-size: 1.5rem;" name="las la-key" />
                         </template>
                         <template v-slot:append>
-                            <q-icon
-                                :name="!showPassword ? 'visibility_off' : 'visibility'"
-                                class="cursor-pointer"
-                                @click="showPassword = !showPassword"
-                        />
+                            <q-icon :name="!showPassword ? 'lar la-eye-slash' : 'lar la-eye'" class="cursor-pointer" @click="showPassword = !showPassword" />
                         </template>
                     </q-input>
 
@@ -124,19 +122,22 @@
     }
 
     .loginCard {
+        padding: 50px 80px;
         width: 540px;
+
+        border-radius: 20px;
         box-shadow: none;
         filter: drop-shadow(10px 10px 15px rgba(0, 0, 0, 0.1));
-        border-radius: 20px;
-        padding: 50px 80px;
 
         h3 {
             font-weight: 600;
         }
 
         .q-field {
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            transition: all 0.4s ease-in-out;
+            border: 1px solid rgba(0, 0, 0, 0.075);
+            border-radius: 0.5rem;
+
+            transition: 0.5s ease;
 
             &__control {
                 padding: 0 15px !important;
@@ -144,11 +145,14 @@
 
             &__label {
                 font-size: 16px;
+                font-weight: 500;
             }
 
             &--focused {
-                border: none;
-                box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.1);
+                border: 1px solid transparent;
+                box-shadow: 0px 15px 20px -5px rgba(0, 0, 0, 0.15);
+
+                transition: 0.5s ease;
             }
 
             input {
@@ -159,11 +163,32 @@
     }
 
     .loginBtn {
-        border-radius: 5px;
+        border-radius: 0.5rem;
     }
 
     .loginLinks {
         font-weight: 600;
+    }
+
+    .q-field {
+        &--float {
+            transform: 0.5s ease;
+
+            .q-field__label {
+                font-weight: bold !important;
+                text-transform: uppercase !important;
+
+                transform: 0.5s ease;
+            }
+        }
+
+        &.--filled .q-field__label {
+            color: var(--q-color-secondary);
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+
+            transform: 0.5s ease;
+        }
     }
 
     @media screen and (max-width: 767px) {

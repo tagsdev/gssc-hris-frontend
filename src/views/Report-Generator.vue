@@ -311,6 +311,8 @@
                 } else {
                     this.date_placeholder = `${ moment(this.date_range).format(_format) }`
                 }
+
+                this.$refs.qDateProxy.hide()
             }
         },
         mounted() {
