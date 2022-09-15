@@ -44,7 +44,8 @@
                     </q-menu>
                 </q-item>
 
-                <q-item v-if="false" clickable :active="clink === 'file_request'" active-class="semi-active" :class="{ 'sidebar-link--active': $route.path.includes('requests') }">
+                <!-- file-requests -->
+                <q-item v-if="true" clickable :active="clink === 'file_request'" active-class="semi-active" :class="{ 'sidebar-link--active': $route.path.includes('requests') }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="las la-file-invoice" />
                     </q-item-section>
@@ -100,7 +101,7 @@
                 </q-item>
 
                 <!-- approve-filed-requests -->
-                <q-item v-if="false" clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Request-Approval' }">
+                <q-item v-if="true" clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Request-Approval' }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="las la-tasks" />
                     </q-item-section>

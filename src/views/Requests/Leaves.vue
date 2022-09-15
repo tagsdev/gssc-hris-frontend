@@ -14,43 +14,81 @@
                     :rows-per-page-options="rowsOptions"
                     :pagination.sync="pagination"
                     class="col my-sticky-column-table"
-                    no-data-label="No data found">
+                    no-data-label="No data found"
+                    :filter="filter"
+                    :filter-method="customFilter">
                         <template v-slot:loading>
                             <q-inner-loading showing color="primary" />
                         </template>
 
+                        <template v-slot:top-right>
+                            <q-input borderless dense debounce="300" v-model="search" placeholder="Search">
+                                <template v-slot:append>
+                                    <q-icon name="search" />
+                                </template>
+                            </q-input>
+                        </template>
+
                         <template v-slot:body="props">
                             <q-tr :props="props">
-                                <q-td key="date" auto-width :props="props">
-                                    <span v-if="props.row.date.from == props.row.date.to" class="text-weight-bold">{{ props.row.date.from }}</span>
-                                    <span v-else>
-                                        <span class="text-weight-bold">{{ props.row.date.from }}</span>
-                                        &nbsp; - &nbsp;
-                                        <span class="text-weight-bold">{{ props.row.date.to }}</span>
-                                    </span>
+                                <q-td key="date" :props="props" class="cursor-pointer" @click="viewRequestDetails(props.row)">
+                                    <div align="right">
+                                        <table class="--date-coverage">
+                                            <tr class="--header">
+                                                <td :colspan="convertDateFormat(props.row.date.from, 'MMM') != convertDateFormat(props.row.date.to, 'MMM') ? 1 : 3">{{ convertDateFormat(props.row.date.from, 'MMM') }}</td>
+                                                <td v-if="getDateDiff(props.row.date.from, props.row.date.to) > 1 && (convertDateFormat(props.row.date.from, 'MMM') != convertDateFormat(props.row.date.to, 'MMM'))">&nbsp;</td>
+                                                <td v-if="getDateDiff(props.row.date.from, props.row.date.to) > 0 && (convertDateFormat(props.row.date.from, 'MMM') != convertDateFormat(props.row.date.to, 'MMM'))">
+                                                    {{ convertDateFormat(props.row.date.to, 'MMM') }}
+                                                </td>
+                                            </tr>
+                                            <tr class="--body">
+                                                <td>{{ convertDateFormat(props.row.date.from, 'DD') }}</td>
+                                                <td v-if="getDateDiff(props.row.date.from, props.row.date.to) > 1 && (convertDateFormat(props.row.date.from, 'DD') != convertDateFormat(props.row.date.to, 'DD'))">
+                                                    <q-icon style="font-size: 18px;" name="las la-ellipsis-h" />
+                                                </td>
+                                                <td v-if="getDateDiff(props.row.date.from, props.row.date.to) > 0">{{ convertDateFormat(props.row.date.to, 'DD') }}</td>
+                                            </tr>
+                                            <tr class="--footer">
+                                                <td :colspan="convertDateFormat(props.row.date.from, 'YYYY') == convertDateFormat(props.row.date.to, 'YYYY') ? 3 : 1">
+                                                    {{ convertDateFormat(props.row.date.from, 'YYYY') }}
+                                                </td>
+                                                <td v-if="getDateDiff(props.row.date.from, props.row.date.to) > 1 && (convertDateFormat(props.row.date.from, 'YYYY') != convertDateFormat(props.row.date.to, 'YYYY'))">&nbsp;</td>
+                                                <td v-if="getDateDiff(props.row.date.from, props.row.date.to) > 0 && (convertDateFormat(props.row.date.from, 'YYYY') != convertDateFormat(props.row.date.to, 'YYYY'))">
+                                                    {{ convertDateFormat(props.row.date.to, 'YYYY') }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </q-td>
 
-                                <q-td key="type" :props="props" auto-width class="text-center">
+                                <q-td key="reason" :props="props" class="cursor-pointer" @click="viewRequestDetails(props.row)">
                                     <span class="text-weight-bold text-uppercase">{{ props.row.type }}</span>
+                                    <br />
+                                    <div style="width: 35vw;" class="customEllipsis">
+                                        <span class="q-px-sm q-mr-xs q-py-xs rounded-borders text-weight-bold text-uppercase text-primary" v-if="props.row.attachment">
+                                            <q-icon style="font-size: 24px;" name="las la-paperclip" />
+                                        </span>
+                                        {{ props.row.reason }}
+
+                                        <q-tooltip v-if="props.row.reason.length > 50" content-style="font-size: 12px" transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-grey-12 text-black">{{ props.row.reason }}</q-tooltip>
+                                    </div>
                                 </q-td>
 
-                                <q-td key="status" :props="props" auto-width class="text-center">
+                                <q-td key="status" :props="props" class="text-center cursor-pointer" @click="viewRequestDetails(props.row)">
                                     <span class="q-px-sm q-py-xs rounded-borders text-weight-bold text-uppercase"
                                         :class="{
-                                            'bg-blue-1 text-blue-8': props.row.status == 'pending',
-                                            'bg-red-1 text-red-8': props.row.status == 'rejected',
+                                            'bg-blue-1 text-blue-8': ['pending', 'reviewing'].includes(props.row.status),
+                                            'bg-red-1 text-red-8': ['rejected', 'cancelled'].includes(props.row.status),
                                             'bg-teal-1 text-teal-14': props.row.status == 'approved',
                                             'bg-grey-3 text-grey-6': props.row.status == 'expired',
-                                    }">
+                                        }"
+                                    >
                                         {{ props.row.status }}
                                     </span>
                                 </q-td>
 
-                                <q-td key="reason" :props="props">
-                                    <div style="width: 45vw;" class="customEllipsis">
-                                        {{ props.row.reason }}
-                                        <q-tooltip v-if="props.row.reason.length > 50" content-style="font-size: 12px" transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-grey-12 text-black">{{ props.row.reason }}</q-tooltip>
-                                    </div>
+                                <q-td key="actions" :props="props" class="text-center">
+                                    <q-btn v-if="!['cancelled', 'expired', 'transacted'].includes(props.row.status.toLowerCase())" flat size="md" icon="las la-trash" color="red-4" class="text-uppercase q-px-sm q-py-xs" @click="cancelDialog(props.row)" />
                                 </q-td>
                             </q-tr>
                         </template>
@@ -59,17 +97,17 @@
 
                 <div v-if="pagesNumber > 1" class="row justify-center q-mt-md">
                     <q-pagination direction-links
-                    push
-                    ellipses
-                    v-model="pagination.page"
-                    color="secondary"
-                    :max="pagesNumber" />
+                        push
+                        ellipses
+                        v-model="pagination.page"
+                        color="secondary"
+                        :max="pagesNumber" />
                 </div>
 
                 <q-btn class="new-request q-pa-md bg-primary text-white text-weight-bold" @click="request_dialog = true" color="secondary" icon="las la-plus" label="New Request" />
 
                 <q-dialog persistent v-model="request_dialog" class="q-px-xl">
-                    <q-card style="width: 60vw; max-width: 80vw;">
+                    <q-card style="width: 60vw; max-width: 1200px;">
                         <q-card-section class="q-mx-md">
                             <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Employee Leave Request Form</div>
                         </q-card-section>
@@ -127,7 +165,7 @@
                                 </div>
                             </div>
 
-                            <div class="row q-px-md q-mt-xl q-mb-lg">
+                            <div class="row q-px-md q-mt-lg q-mb-md">
                                 <div class="col q-mx-md">
                                     <q-banner rounded class="bg-grey-12">
                                         All fields with asterisks (<code class="text-red-8"><strong>*</strong></code>) are required.
@@ -148,9 +186,9 @@
                                 <div class="col q-px-md">
                                     <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Day Type</span>
                                     <div class="q-py-sm">
-                                        <q-radio v-model="isHalf" selected checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="wd" label="Whole Day" color="secondary" @input="dateRange()" :disable="disableDayType" class="q-mx-md text-weight-bold text-uppercase" />
-                                        <q-radio v-model="isHalf" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="hd" label="Half Day" color="secondary" @input="dateRange()" :disable="disableDayType" class="q-mx-md text-weight-bold text-uppercase" />
-                                        <q-checkbox v-model="isLate" @input="clearDate()" val="lf" label="Late Filing" color="red-8" class="q-mx-md text-weight-bold text-uppercase" />
+                                        <q-radio v-model="isHalf" selected checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="wd" label="Whole Day" color="secondary" @input="dateRange()" :disable="disableDayType" class="q-mx-xs text-weight-bold text-uppercase" />
+                                        <q-radio v-model="isHalf" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="hd" label="Half Day" color="secondary" @input="dateRange()" :disable="disableDayType" class="q-mx-xs text-weight-bold text-uppercase" />
+                                        <q-checkbox v-model="isLate" @input="clearDate()" val="lf" label="Late Filing" color="red-8" class="q-mx-xs text-weight-bold text-uppercase" />
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +209,7 @@
 
                                 <div class="col-6 q-px-md">
                                     <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9" :class="{'--required': requireAttachment }">File Attachment(s)</span>
-                                    <q-file v-model="attachments" :required="requireAttachment" color="secondary" class="text-weight-bold" outlined clearable counter multiple :rules="requireAttachment ? [ val => !!val || 'This field is required' ] : []">
+                                    <q-file v-model="files" :required="requireAttachment" color="secondary" class="text-weight-bold attachment" outlined clearable counter :rules="requireAttachment ? [ val => !!val || 'This field is required' ] : []">
                                         <template v-slot:prepend>
                                             <q-icon name="las la-paperclip" />
                                         </template>
@@ -197,6 +235,81 @@
                         </q-card-actions>
                     </q-card>
                 </q-dialog>
+
+                <q-dialog persistent v-model="details_dialog" class="q-px-xl">
+                    <q-card style="width: 60vw; max-width: 800px;">
+                        <q-card-section class="q-mx-md">
+                            <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Filed Request Information</div>
+                        </q-card-section>
+
+                        <q-separator class="q-mx-xl" />
+
+                        <q-card-section>
+                            <div class="row q-px-md q-mb-sm">
+                                <div class="col q-mx-md">
+                                    <q-card flat bordered class="bg-grey-3 my-card">
+                                        <q-card-section class="">
+                                            <span class="block q-mb-sm text-weight-bold text-uppercase">{{ this.request_info.requestor }}</span>
+
+                                            <span class="block q-mb-sm text-weight-bold text-uppercase">
+                                                {{ this.request_info.type }}<span v-if="this.request_info.desc"> - {{ this.request_info.desc }}</span>
+                                            </span>
+
+                                            <span class="block"><i><i class="las la-quote-left"></i> &nbsp; {{ this.request_info.reason }} &nbsp; <i class="las la-quote-right"></i></i></span>
+
+                                            <q-btn flat class="q-mt-sm" color="primary" icon="las la-download" label="Download Attachment" v-if="this.request_info.attachment" />
+                                        </q-card-section>
+                                    </q-card>
+                                </div>
+                            </div>
+                        </q-card-section>
+
+                        <q-card-section class="q-mx-xl">
+                            <q-timeline color="primary" layout="comfortable" side="right">
+                                <q-timeline-entry v-for="entry in this.timeline" :key="entry.title"
+                                    :title="entry.title"
+                                    :subtitle="convertDateFormat(entry.subtitle, 'MMM DD, YYYY HH:mm A')"
+                                    :body="entry.body"
+                                    :color="timelineColor(entry.subtitle)"
+                                    side="left"
+                                />
+                            </q-timeline>
+                        </q-card-section>
+
+                        <q-card-actions class="q-pb-lg q-px-md" align="right">
+                            <div class="row q-px-md q-pb-md">
+                                <div class="col q-px-md">
+                                    <q-btn flat label="Close" class="text-uppercase q-px-sm q-py-xs" v-close-popup />
+                                </div>
+                            </div>
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+
+                <q-dialog persistent v-model="cancel_dialog" class="q-px-xl">
+                    <q-card style="width: 60vw; max-width: 500px;">
+                        <q-card-section class="q-mx-md">
+                            <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Cancel Request</div>
+                        </q-card-section>
+
+                        <q-separator class="q-mx-xl" />
+
+                        <q-card-section class="q-mx-md">
+                            <p class="q-px-md">
+                                Are you sure you want to Cancel this request?
+                            </p>
+                        </q-card-section>
+
+                        <q-card-actions class="q-pb-lg q-px-md" align="right">
+                            <div class="row q-px-md q-pb-md">
+                                <div class="col q-px-md">
+                                    <q-btn label="Yes" color="primary" class="text-uppercase q-px-sm q-py-xs q-mr-sm" @click="cancel(cancel_id)" :loading="diaLoading" v-close-popup />
+                                    <q-btn flat label="No" class="text-uppercase q-px-sm q-py-xs" v-close-popup />
+                                </div>
+                            </div>
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
             </div>
         </div>
     </q-page>
@@ -211,36 +324,44 @@
     export default {
         data() {
             return {
-                attachments: null,
+                files: [],
+                cancel_dialog: false,
+                cancel_id: 0,
                 columns: [
                     {
                         name: 'date',
                         align: 'right',
                         required: true,
-                        label: 'date coverage',
+                        label: 'coverage',
                         field: 'date',
-                        sortable: false
+                        sortable: false,
+                        headerStyle: {
+                            'width': '12.5% !important'
+                        },
                     },
                     {
-                        name: 'type',
+                        name: 'reason',
                         align: 'left',
-                        label: 'leave type',
-                        field: 'type',
-                        sortable: false
+                        label: 'request information',
+                        field: 'reason',
+                        sortable: false,
                     },
                     {
                         name: 'status',
                         align: 'center',
                         label: 'status',
                         field: 'status',
-                        sortable: false
+                        sortable: false,
                     },
                     {
-                        name: 'reason',
-                        align: 'left',
-                        label: 'reason',
-                        field: 'reason',
-                        sortable: false
+                        name: 'actions',
+                        align: 'right',
+                        label: '',
+                        sortable: false,
+                        headerStyle: {
+                            'width': '5% !important',
+                            'text-align': 'center',
+                        },
                     },
                 ],
                 date_placeholder: "",
@@ -248,6 +369,7 @@
                     from: '',
                     to: ''
                 },
+                details_dialog: false,
                 isDateRange: true,
                 isHalf: "wd",
                 isLate: false,
@@ -259,6 +381,11 @@
                         label: 'Vacation Leave',
                         value: 'vacation_leave',
                         abbr: 'vl',
+                        inactive: false,
+                    }, {
+                        label: 'Company Leave',
+                        value: 'company_leave',
+                        abbr: 'cl',
                         inactive: false,
                     }, {
                         label: 'Sick Leave',
@@ -288,7 +415,7 @@
                     }, {
                         label: 'Parental Leave (Solo Parent)',
                         value: 'parental_leave',
-                        abbr: 'prl',
+                        abbr: 'pr',
                         inactive: false,
                     },
                 ],
@@ -296,24 +423,70 @@
                 loading: false,
                 requireAttachment: false,
                 reason: "",
+                request_info: {
+                    requestor: "",
+                    type: "",
+                    desc: "",
+                    reason: "",
+                    coverage: {},
+                    attachment: "",
+                },
                 rows: [],
                 rowsOptions: [5, 10, 15, 20, 50, 0],
                 pagination: {
-                    rowsPerPage: 10,
+                    rowsPerPage: 5,
                     page: 1
                 },
                 request_dialog: false,
+                search: '',
+                timeline: [],
             }
         },
         methods: {
-            dateOptions(dateNow) {
+            customFilter(rows, terms){
+                this.selected = []
+                let lowerSearch = terms.search ? terms.search.toLowerCase() : ""
+
+                const filteredRows = rows.filter((row, i) => {
+                    let ans = false
+                    let s1 = true
+
+                    if(lowerSearch != ""){
+                        s1 = false
+
+                        let s1_values = Object.values(row)
+                        let s1_lower = s1_values.map((x) => {
+                            if (x !== null && x.length > 0) {
+                                return x.toString().toLowerCase()
+                            }
+                        })
+
+                        for (let val = 0; val < s1_lower.length; val++) {
+                            if (
+                                typeof s1_lower[val] !== 'undefined'
+                                && s1_lower[val].includes(lowerSearch)
+                            ){
+                                s1 = true
+                                break
+                            }
+                        }
+                    }
+
+                    ans = s1 ? true : false
+
+                    return ans
+                })
+
+                return filteredRows
+            },
+            dateOptions (dateNow) {
                 if (this.isLate) {
                     return dateNow < moment().format("YYYY/MM/DD")
                 } else {
                     return dateNow >= moment().format("YYYY/MM/DD")
                 }
             },
-            getTeamLeaveTracker() {
+            getTeamLeaveTracker () {
                 let headers = {
                     'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                 }
@@ -326,15 +499,11 @@
                         this.loading = false
                     })
                     .catch((error) => {
-                        console.error(error.response.data.message)
+                        console.error(error)
                         this.loading = false
                     });
             },
-            submit() {
-                let headers = {
-                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
-                }
-
+            submit () {
                 let data = {
                     type: this.leave_type.value,
                     date: {
@@ -348,35 +517,77 @@
                     status: 'pending',
                 };
 
-                if (!this.isDateRange) {
+                if (typeof(this.date_range) == "string") {
                     data.date = {
                         from: this.date_range,
                         to: this.date_range
                     }
                 }
 
+                // this.diaLoading = true
+
+                let formData = new FormData()
+                formData.append('file', this.files)
+                formData.append('data', JSON.stringify(data))
+                formData.append('_method', 'PUT')
+
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/submit`, formData, {
+                    headers: {
+                        'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(response => {
+                    // this.diaLoading = false
+                    // this.request_dialog = false
+                    // this.clearDialog()
+
+                    // this.rows.unshift(data)
+
+                    console.log(response)
+
+                    Notify.create({
+                        type: 'positive',
+                        message: `Request Submitted Successfully!`,
+                        closeBtn: false,
+                    })
+                })
+                .catch(error => {
+                    this.errorMessage = error.message
+                    console.error(error)
+                })
+            },
+            cancel (id) {
                 this.diaLoading = true
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/submit`, data, { headers })
-                    .then(response => {
-                        this.diaLoading = false
-                        this.request_dialog = false
-                        this.clearDialog()
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/cancel`, { id: id }, {
+                    headers: {
+                        'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
+                    }
+                })
+                .then(response => {
+                    this.diaLoading = false
+                    this.cancel_dialog = false
 
-                        this.rows.unshift(data)
+                    this.rows.map((value, key) => {
+                        if (value.request_id == id) {
+                            value.status = 'cancelled'
+                        }
+                    })
 
-                        Notify.create({
-                            type: 'positive',
-                            message: `Request Submitted Successfully!`,
-                            closeBtn: false,
-                        })
+                    Notify.create({
+                        type: 'positive',
+                        message: `Request Cancelled Successfully!`,
+                        closeBtn: false,
                     })
-                    .catch(error => {
-                        this.errorMessage = error.message
-                        console.error(error)
-                    })
+                })
+                .catch(error => {
+                    this.diaLoading = false
+                    this.errorMessage = error.message
+                    console.error(error)
+                })
             },
-            populateDateRange() {
+            populateDateRange () {
                 let _format = "MMM DD, YYYY"
 
                 if (this.date_range.from) {
@@ -387,48 +598,113 @@
 
                 this.$refs.qDateProxy.hide()
             },
-            dateRange() {
+            dateRange () {
                 this.clearDate()
                 this.isDateRange = this.isHalf == "hd" ? false : true
             },
-            leaveType() {
-                let _withDayType = ['vacation_leave', 'sick_leave']
+            leaveType () {
+                let _withHalfDay = ['vacation_leave', 'company_leave', 'sick_leave', 'paternity_leave', 'emergency_leave']
                 let _isDateRange = ['emergency_leave', 'gynecological_leave', 'maternity_leave']
-                    _isDateRange = _isDateRange.concat(_withDayType)
-                let _withAttachment = ['vacation_leave']
+                    _isDateRange = _isDateRange.concat(_withHalfDay)
+                let _requireAttachment = ['sick_leave', 'maternity_leave', 'gynecological_leave', 'emergency_leave', 'paternity_leave', 'parental_leave']
 
                 this.clearDate()
+                this.isHalf = "wd"
                 this.isDateRange = _isDateRange.includes(this.leave_type.value) && (this.isHalf == "wd") ? true : false
-                this.disableDayType = _withDayType.includes(this.leave_type.value) ? false : true
-                this.requireAttachment = _withAttachment.includes(this.leave_type.value) ? false : true
+                this.disableDayType = _withHalfDay.includes(this.leave_type.value) ? false : true
+                this.requireAttachment = _requireAttachment.includes(this.leave_type.value) ? true : false
             },
-            clearDialog() {
+            clearDialog () {
                 this.clearDate()
                 this.leave_type = ''
-                this.attachments = null
+                this.files = null
                 this.reason = ''
                 this.isHalf = "wd"
                 this.isLate = false
             },
-            clearDate() {
+            clearDate () {
                 this.date_range = ''
                 this.date_placeholder = ''
             },
+            getRequestInformation (row) {
+                let _data = this.rows[this.rows.indexOf(row)]
+
+                this.request_info.requestor = _data.employee_name
+                this.request_info.type = _data.request_type
+                this.request_info.desc = _data.request_description
+                this.request_info.reason = _data.reason
+                this.request_info.attachment = _data.attachment
+                this.date = _data.date_to
+                this.date_placeholder = moment(_data.date_to).format("MMM DD, YYYY")
+            },
+            cancelDialog (row) {
+                this.cancel_dialog = true
+                this.getRequestInformation(row)
+                this.cancel_id = row.request_id
+            },
+            viewRequestDetails (row) {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                }
+
+                this.details_dialog = true
+                this.getRequestInformation(row)
+                this.timeline = []
+
+                axios.get(`${ process.env.VUE_APP_API_URL }/user/request/approval/${ row.request_id }`, { headers })
+                    .then(response => {
+                        let _arr = []
+                        response.data.forEach(function (value, key) {
+                            _arr.push(value)
+                        });
+
+                        this.timeline = _arr
+                    })
+                    .catch((error) => {
+                        console.error(error)
+                        this.loading = false
+                    });
+            },
+            timelineColor (value) {
+                if (value == null) {
+                    return 'grey-4'
+                } else {
+                    return 'primary'
+                }
+            },
+            convertDateFormat (date, format) {
+                if (!moment(date).isValid()) {
+                    return ""
+                }
+
+                return moment(date).format(format)
+            },
+            getDateDiff (from, to) {
+                let _from = moment(from)
+                let _to = moment(to)
+
+                return _to.diff(_from, 'days')
+            },
         },
-        mounted() {
+        mounted () {
             this.leaves = JSON.parse(Cookies.get('leaves'))
             this.getTeamLeaveTracker()
         },
         computed: {
             isComplete () {
                 if (this.requireAttachment) {
-                    return this.leave_type && this.isHalf && this.attachments && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
+                    return this.leave_type && this.isHalf && this.files && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
                 } else {
                     return this.leave_type && this.isHalf && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
                 }
             },
             pagesNumber () {
                 return Math.ceil(this.rows.length / this.pagination.rowsPerPage)
+            },
+            filter () {
+                return {
+                    search: this.search
+                }
             }
         }
     }
@@ -461,15 +737,6 @@
             }
         }
 
-        .customEllipsis {
-            display: inline-block;
-            vertical-align: top;
-
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
         .badge {
             padding: 0.15rem 0.5rem;
 
@@ -490,6 +757,53 @@
             &.badge-green {
                 background: rgba(37, 197, 157, 0.075);
                 color: rgba(37, 197, 157, 1);
+            }
+        }
+
+        .customEllipsis {
+            display: inline-block;
+            vertical-align: top;
+
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .--date-coverage {
+            margin: 0;
+            padding: 0;
+
+            border-radius: 0.25rem;
+            border-spacing: 0;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+
+            .--header td,
+            .--body td,
+            .--footer td {
+                width: 50px;
+                height: 15px;
+                padding: 0;
+
+                font-size: 0.65rem;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .--header td {
+                background: $red-7;
+                color: #FFFFFF;
+                text-transform: uppercase;
+            }
+
+            .--body td {
+                height: 30px !important;
+
+                font-size: 1rem !important;
+            }
+
+            .--footer td {
+
             }
         }
 

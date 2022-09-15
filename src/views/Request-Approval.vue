@@ -1,51 +1,104 @@
 <template>
-    <q-page padding :class="$route.name" class="q-pa-lg bg-grey-4">
+    <q-page padding :class="$route.name" class="bg-grey-4">
         <div class="row justify-center">
-            <div class="col-12 bg-white q-px-xl q-py-xl report-container">
-                <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Employee Filed Requests Approval</h4>
+            <div class="col-xs-12 bg-white q-px-xl q-py-xl approval-container">
+                <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Request Approval</h4>
                 <span class="text-grey-6">
-                    Handle the status of requests filed by your employees.
+                    Employee Filed Requests for Approval
                 </span>
 
-                <div class="row q-mt-lg">
-                    <div class="col-4">
-                        <q-select class="q-mr-sm" outlined v-model="report_type" color="primary" :options="report_types" label="Report Type" />
-                    </div>
+                <div class="q-pa-xs q-mt-md">
+                    <q-table flat
+                        :data="rows"
+                        :loading="loading"
+                        :columns="columns"
+                        row-key="employee_name"
+                        :rows-per-page-options="rowsOptions"
+                        :pagination.sync="pagination"
+                        class="col my-sticky-column-table"
+                        no-data-label="All Filed Requests are Approved!"
+                        :visible-columns="visibleColumns"
+                        :filter="filter"
+                        @request="onRequest"
+                    >
+                        <template v-slot:top-left>
+                            <div class="q-pa-md">
+                                <div class="q-gutter-xs">
+                                    <q-chip
+                                        :selected.sync="filterSources.leave"
+                                        :class="{
+                                            'text-weight-bold': filterSources.leave,
+                                        }"
+                                        v-if="Object.keys(sources).includes('leave')"
+                                        size="14px"
+                                        class="text-uppercase"
+                                        @click="filterSource('leave')"
+                                    >
+                                        <q-avatar size="30px" color="secondary" text-color="white">{{ sources.leave }}</q-avatar>
+                                        Leaves <q-badge v-if="filterSources.leave" rounded color="teal-6" class="q-ml-md" :label="sources.leave" />
+                                    </q-chip>
 
-                    <div class="col-4">
-                        <q-input class="q-mx-sm" filled v-model="date_placeholder" label="Date Range">
-                            <template v-slot:append>
-                                <q-icon name="event" class="cursor-pointer">
-                                    <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
-                                        <q-date v-model="date_range" range today-btn mask="YYYY-MM-DD" @input="populateDateRange()" />
-                                    </q-popup-proxy>
-                                </q-icon>
-                            </template>
-                        </q-input>
-                    </div>
+                                    <q-chip
+                                        :selected.sync="filterSources.ob"
+                                        :class="{
+                                            'text-weight-bold': filterSources.ob,
+                                        }"
+                                        v-if="Object.keys(sources).includes('ob')"
+                                        size="14px"
+                                        class="text-uppercase"
+                                        @click="filterSource('ob')"
+                                    >
+                                        <q-avatar size="30px" color="secondary" text-color="white">{{ sources.ob }}</q-avatar>
+                                        Official Business <q-badge v-if="filterSources.ob" rounded color="teal-6" class="q-ml-md" :label="sources.ob" />
+                                    </q-chip>
 
-                    <div class="col-4">
-                        <q-btn icon="las la-search" @click="previewReport()" :disabled="report_type == ''" :loading="loadingExcelExport" color="primary" class="q-pa-sm q-mx-sm" label="Preview Report" />
-                        <q-btn icon="las la-file-excel" @click="exportExcel()" :disabled="report_type == ''" :loading="loadingExcelExport" color="green-10" class="q-pa-sm q-mx-sm" label="Export To Excel" />
-                    </div>
-                </div>
+                                    <q-chip
+                                        :selected.sync="filterSources.change_rd"
+                                        :class="{
+                                            'text-weight-bold': filterSources.change_rd,
+                                        }"
+                                        v-if="Object.keys(sources).includes('change_rd')"
+                                        size="14px"
+                                        class="text-uppercase"
+                                        @click="filterSource('change_rd')"
+                                    >
+                                        <q-avatar size="30px" color="secondary" text-color="white">{{ sources.change_rd }}</q-avatar>
+                                        Change Rest Day <q-badge v-if="filterSources.change_rd" rounded color="teal-6" class="q-ml-md" :label="sources.change_rd" />
+                                    </q-chip>
 
-                <div class="row q-mt-lg">
-                    <q-table flat :data="preview.data"
-                    :loading="loadingExcelExport"
-                    :columns="preview.columns"
-                    :rows-per-page-options="rowsOptions"
-                    :pagination.sync="pagination"
-                    class="col my-sticky-column-table"
-                    no-data-label="No data found"
-                    :row-key="row_key"
-                    @row-click="selectedRow"
-                    :filter="filter"
-                    :filter-method="customFilter"
-                    selection="multiple"
-                    :selected.sync="selected">
-                        <template v-if="this.preview.data.length > 0" v-slot:top-right>
-                            <q-input borderless dense debounce="300" v-model="search" placeholder="Search">
+                                    <q-chip
+                                        :selected.sync="filterSources.change_shift"
+                                        :class="{
+                                            'text-weight-bold': filterSources.change_shift,
+                                        }"
+                                        v-if="Object.keys(sources).includes('change_shift')"
+                                        size="14px"
+                                        class="text-uppercase"
+                                        @click="filterSource('change_shift')"
+                                    >
+                                        <q-avatar size="30px" color="secondary" text-color="white">{{ sources.change_shift }}</q-avatar>
+                                        Change Shift <q-badge v-if="filterSources.change_shift" rounded color="teal-6" class="q-ml-md" :label="sources.change_shift" />
+                                    </q-chip>
+
+                                    <q-chip
+                                        :selected.sync="filterSources.payroll_complaint"
+                                        :class="{
+                                            'text-weight-bold': filterSources.payroll_complaint,
+                                        }"
+                                        v-if="Object.keys(sources).includes('payroll_complaint')"
+                                        size="14px"
+                                        class="text-uppercase"
+                                        @click="filterSource('payroll_complaint')"
+                                    >
+                                        <q-avatar size="30px" color="secondary" text-color="white">{{ sources.payroll_complaint }}</q-avatar>
+                                        Payroll Complaints <q-badge v-if="filterSources.payroll_complaint" rounded color="teal-6" class="q-ml-md" :label="sources.payroll_complaint" />
+                                    </q-chip>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template v-slot:top-right>
+                            <q-input borderless dense debounce="500" v-model="search" @input="onRequest" placeholder="Search">
                                 <template v-slot:append>
                                     <q-icon name="search" />
                                 </template>
@@ -56,23 +109,182 @@
                             <q-inner-loading showing color="primary" />
                         </template>
 
-                        <template v-slot:header="props">
-                            <q-tr :props="props">
-                                <q-th v-for="col in props.cols" :key="col.name" :props="props">
-                                    {{ col.label }}
-                                </q-th>
-                            </q-tr>
-                        </template>
-
                         <template v-slot:body="props">
-                            <q-tr class="cursor-pointer" :props="props" @click="selectedRow(props.row, props)">
-                                <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                                    {{ (props.row[col.name] !== null && !isNaN(props.row[col.name]) && props.row[col.name].toString().indexOf('.') != -1) ? parseFloat(props.row[col.name]).toFixed(2) : props.row[col.name] }}
+                            <q-tr :props="props">
+                                <q-td key="employee_name" :props="props" auto-width class="text-center cursor-pointer" @click="viewRequestDetails(props.row)">
+                                    <div align="right">
+                                        <table class="--date-coverage">
+                                            <tr class="--header">
+                                                <td :colspan="convertDateFormat(props.row.date_from, 'MMM') != convertDateFormat(props.row.date_to, 'MMM') ? 1 : 3">{{ convertDateFormat(props.row.date_from, 'MMM') }}</td>
+                                                <td v-if="getDateDiff(props.row.date_from, props.row.date_to) > 1 && (convertDateFormat(props.row.date_from, 'MMM') != convertDateFormat(props.row.date_to, 'MMM'))">&nbsp;</td>
+                                                <td v-if="getDateDiff(props.row.date_from, props.row.date_to) > 0 && (convertDateFormat(props.row.date_from, 'MMM') != convertDateFormat(props.row.date_to, 'MMM'))">
+                                                    {{ convertDateFormat(props.row.date_to, 'MMM') }}
+                                                </td>
+                                            </tr>
+                                            <tr class="--body">
+                                                <td>{{ convertDateFormat(props.row.date_from, 'DD') }}</td>
+                                                <td v-if="getDateDiff(props.row.date_from, props.row.date_to) > 1 && (convertDateFormat(props.row.date_from, 'DD') != convertDateFormat(props.row.date_to, 'DD'))">
+                                                    <q-icon style="font-size: 18px;" name="las la-ellipsis-h" />
+                                                </td>
+                                                <td v-if="getDateDiff(props.row.date_from, props.row.date_to) > 0">{{ convertDateFormat(props.row.date_to, 'DD') }}</td>
+                                            </tr>
+                                            <tr class="--footer">
+                                                <td :colspan="convertDateFormat(props.row.date_from, 'YYYY') == convertDateFormat(props.row.date_to, 'YYYY') ? 3 : 1">
+                                                    {{ convertDateFormat(props.row.date_from, 'YYYY') }}
+                                                </td>
+                                                <td v-if="getDateDiff(props.row.date_from, props.row.date_to) > 1 && (convertDateFormat(props.row.date_from, 'YYYY') != convertDateFormat(props.row.date_to, 'YYYY'))">&nbsp;</td>
+                                                <td v-if="getDateDiff(props.row.date_from, props.row.date_to) > 0 && (convertDateFormat(props.row.date_from, 'YYYY') != convertDateFormat(props.row.date_to, 'YYYY'))">
+                                                    {{ convertDateFormat(props.row.date_to, 'YYYY') }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </q-td>
+
+                                <q-td key="description" :props="props" class="text-center cursor-pointer" @click="viewRequestDetails(props.row)">
+                                    <span class="text-weight-bold text-uppercase">{{ props.row.employee_name }}</span>
+                                    <br />
+                                    <span class="text-weight-bold text-uppercase">{{ props.row.request_type }}</span>
+                                    <br />
+                                    <span class="q-pr-sm q-mr-xs q-py-xs rounded-borders text-weight-bold text-uppercase text-primary" v-if="props.row.attachment">
+                                        <q-icon style="font-size: 24px;" name="las la-paperclip" />
+                                    </span>
+                                    <i v-if="props.row.request_description" style="">{{ props.row.request_description }}</i>
+                                    <i v-else>No description.</i>
+                                </q-td>
+
+                                <q-td key="date_filed" :props="props" class="text-center cursor-pointer" @click="viewRequestDetails(props.row)">
+                                    <span class="text-weight-bold text-uppercase">{{ convertDateFormat(props.row.date_filed, 'MMM DD, YYYY HH:mm A') }}</span>
+                                </q-td>
+
+                                <q-td key="request_type" :props="props" class="text-center">
+                                    <span class="text-weight-bold text-uppercase">{{ props.row.request_type }}</span>
+                                </q-td>
+
+                                <q-td key="actions" :props="props">
+                                    <q-btn flat size="md" icon="las la-thumbs-up" color="blue-7" class="text-uppercase q-py-xs" @click="approveRequest(props.row)" />
+                                    <q-btn flat size="md" icon="las la-thumbs-down" color="red-7" class="text-uppercase q-py-xs" @click="rejectRequest(props.row)" />
                                 </q-td>
                             </q-tr>
                         </template>
                     </q-table>
                 </div>
+
+                <q-dialog persistent v-model="dialog.request" class="q-px-xl">
+                    <q-card style="width: 60vw; max-width: 800px;">
+                        <q-card-section class="q-mx-md">
+                            <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Request Approval Form</div>
+                        </q-card-section>
+
+                        <q-separator class="q-mx-xl" />
+
+                        <q-card-section>
+                            <div class="row q-px-md q-mb-sm">
+                                <div class="col q-mx-md">
+                                    <span class="block q-mb-lg text-weight-bold text-uppercase text-blue-grey-9">
+                                        You are about to <span :class="{ 'text-blue-6': this.action.action == 'approve', 'text-red-6': this.action.action == 'reject' }">{{ this.action.action }}</span> the Request Information below:
+                                    </span>
+
+                                    <q-card flat bordered class="bg-grey-3 my-card">
+                                        <q-card-section class="">
+                                            <span class="block q-mb-sm text-weight-bold text-uppercase">{{ this.request_info.requestor }}</span>
+
+                                            <span class="block q-mb-sm text-weight-bold text-uppercase">
+                                                {{ this.request_info.type }}<span v-if="this.request_info.desc"> - {{ this.request_info.desc }}</span>
+                                            </span>
+
+                                            <span class="block"><i><i class="las la-quote-left"></i> &nbsp; {{ this.request_info.reason }} &nbsp; <i class="las la-quote-right"></i></i></span>
+
+                                            <q-btn flat class="q-mt-sm" color="primary" icon="las la-download" label="Download Attachment" v-if="this.request_info.attachment" />
+                                        </q-card-section>
+                                    </q-card>
+                                </div>
+                            </div>
+
+                            <div v-if="this.isClinic" class="row justify-content-end q-px-md">
+                                <div class="col-6 q-px-md">
+                                    <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Date</span>
+                                    <q-input outlined v-model="date_placeholder" color="secondary" @click="$refs.qDateProxy.show()">
+                                        <template v-slot:append>
+                                            <q-icon name="event" class="cursor-pointer">
+                                                <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
+                                                    <q-date v-model="date" today-btn mask="YYYY-MM-DD" color="secondary" @input="populateDateRange()" />
+                                                </q-popup-proxy>
+                                            </q-icon>
+                                        </template>
+                                    </q-input>
+                                </div>
+                            </div>
+
+                            <div class="row q-mt-md q-px-md">
+                                <div class="col q-px-md">
+                                    <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Approver Remarks <span class="text-grey-5 text-uppercase text-weight-light">(Optional)</span></span>
+                                    <q-input v-model="reason" outlined autogrow color="secondary" counter maxlength="300" />
+                                </div>
+                            </div>
+                        </q-card-section>
+
+                        <q-card-actions class="q-pb-lg q-px-md" align="right">
+                            <div class="row q-px-md q-pb-md">
+                                <div class="col q-px-md">
+                                    <q-btn label="Submit" color="secondary" class="text-uppercase q-px-xl q-py-xs q-mr-lg" :loading="diaLoading" @click="submit()" />
+                                    <q-btn flat label="Cancel" class="text-uppercase q-px-sm q-py-xs" @click="clearDialog()" v-close-popup />
+                                </div>
+                            </div>
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+
+                <q-dialog persistent v-model="dialog.details" class="q-px-xl">
+                    <q-card style="width: 60vw; max-width: 1200px;">
+                        <q-card-section class="q-mx-md">
+                            <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Filed Request Information</div>
+                        </q-card-section>
+
+                        <q-separator class="q-mx-xl" />
+
+                        <q-card-section>
+                            <div class="row q-px-md q-mb-sm">
+                                <div class="col q-mx-md">
+                                    <q-card flat bordered class="bg-grey-3 my-card">
+                                        <q-card-section class="">
+                                            <span class="block q-mb-sm text-weight-bold text-uppercase">{{ this.request_info.requestor }}</span>
+
+                                            <span class="block q-mb-sm text-weight-bold text-uppercase">
+                                                {{ this.request_info.type }}<span v-if="this.request_info.desc"> - {{ this.request_info.desc }}</span>
+                                            </span>
+
+                                            <span class="block"><i><i class="las la-quote-left"></i> &nbsp; {{ this.request_info.reason }} &nbsp; <i class="las la-quote-right"></i></i></span>
+
+                                            <q-btn flat class="q-mt-sm" color="primary" icon="las la-download" label="Download Attachment" v-if="this.request_info.attachment" />
+                                        </q-card-section>
+                                    </q-card>
+                                </div>
+                            </div>
+                        </q-card-section>
+
+                        <q-card-section class="q-mx-xl">
+                            <q-timeline color="primary" layout="comfortable" side="right">
+                                <q-timeline-entry v-for="entry in this.timeline" :key="entry.title"
+                                    :title="entry.title"
+                                    :subtitle="convertDateFormat(entry.subtitle, 'MMM DD, YYYY HH:mm A')"
+                                    :body="entry.body"
+                                    :color="timelineColor(entry.subtitle)"
+                                    side="left"
+                                    class="text-uppercase"
+                                />
+                            </q-timeline>
+                        </q-card-section>
+
+                        <q-card-actions class="q-pb-lg q-px-md" align="right">
+                            <div class="row q-px-md q-pb-md">
+                                <div class="col q-px-md">
+                                    <q-btn flat label="Close" class="text-uppercase q-px-sm q-py-xs" v-close-popup />
+                                </div>
+                            </div>
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
             </div>
         </div>
     </q-page>
@@ -82,258 +294,477 @@
     import axios from 'axios'
     import Cookies from 'js-cookie'
     import moment from 'moment'
-    import exportFromJSON from "export-from-json";
     import { Notify } from 'quasar'
 
-    window.Laravel = {
-        jsPermissions: JSON.parse(Cookies.get('jsPermissions'))
-    }
-
     export default {
-        components: {
-        },
         data() {
             return {
-                date_range: {
-                    from: '',
-                    to: ''
+                action: {
+                    id: 0,
+                    abbr: '',
+                    source: '',
+                    action: '',
                 },
-                row_key: "",
-                search: "",
-                selected: [],
-                rowsOptions: [5, 10, 15, 20, 50, 0],
-                pagination: {
-                    rowsPerPage: 10,
-                    page: 1
-                },
-                date_placeholder: "",
-                loadingExcelExport: false,
-                preview: {
-                    columns: [],
-                    data: [],
-                },
-                report_type: "",
-                report_types: [
+                columns: [
                     {
-                        label: 'Employee Attendance (Raw)',
-                        value: 'attendance_raw',
-                    }, {
-                        label: 'Employee Attendance (Processed)',
-                        value: 'attendance_processed',
-                    }, {
-                        label: 'AMSASB',
-                        value: 'amsasb',
-                    }, {
-                        label: 'Employee Payroll Complaints',
-                        value: 'payroll_complaints',
-                    }, {
-                        label: 'Past Cut-Off Leaves',
-                        value: 'past_leaves',
+                        name: 'employee_name',
+                        align: 'right',
+                        required: true,
+                        label: 'coverage',
+                        sortable: false,
+                        headerStyle: {
+                            'width': '12.5% !important'
+                        },
+                    },
+                    {
+                        name: 'description',
+                        align: 'left',
+                        required: true,
+                        label: 'request information',
+                        sortable: false,
+                        headerStyle: {
+                            'width': '50% !important',
+                            'align': 'center !important',
+                        },
+                    },
+                    {
+                        name: 'date_filed',
+                        align: 'right',
+                        required: true,
+                        label: 'date filed',
+                        sortable: false,
+                        headerStyle: {
+                            'align': 'center !important',
+                        },
+                    },
+                    {
+                        name: 'request_type',
+                        align: 'left',
+                        label: 'type',
+                        sortable: false,
+                    },
+                    {
+                        name: 'actions',
+                        align: 'right',
+                        required: true,
+                        label: '',
+                        sortable: false,
+                        headerStyle: {
+                            'width': '15% !important',
+                            'text-align': 'center',
+                        },
                     },
                 ],
-                filter_column: {
-                    attendance_raw: 'Employee ID Number',
-                    attendance_processed: '"Employee ID"',
-                    amsasb: 'ADEMID',
-                    payroll_complaints: '"Employee ID"',
-                    past_leaves: 'LBREMID',
+                date_placeholder: "",
+                date: "",
+                diaLoading: false,
+                dialog: {
+                    details: false,
+                    request: false,
                 },
-            }
-        },
-        computed: {
-            filter() {
-                return {
-                    search: this.search
-                }
+                filter: '',
+                filterSources: {
+                    leave: false,
+                    ob: false,
+                    change_rd: false,
+                    change_shift: false,
+                    payroll_complaint: false,
+                },
+                isClinic: false,
+                loading: false,
+                pagination: {
+                    page: 0,
+                    rowsPerPage: 5,
+                    rowsNumber: 5,
+                    sortBy: 'asc',
+                    descending: false,
+                },
+                reason: "",
+                request_info: {
+                    requestor: "",
+                    type: "",
+                    desc: "",
+                    reason: "",
+                    coverage: {},
+                    attachment: "",
+                },
+                rows: [],
+                rowsOptions: [5, 10, 15, 20, 50, 0],
+                search: "",
+                sources: [],
+                timeline: [],
+                visibleColumns: ['employee_name', 'description', 'date_filed', 'actions'],
+                visibleSources: [],
             }
         },
         methods: {
-            customFilter(rows, terms){
-                this.selected = []
-                let lowerSearch = terms.search ? terms.search.toLowerCase() : ""
-
-                const filteredRows = rows.filter((row, i) => {
-                    let ans = false
-                    let s1 = true
-
-                    if(lowerSearch != ""){
-                        s1 = false
-
-                        let s1_values = Object.values(row)
-                        let s1_lower = s1_values.map((x) => {
-                            if (x !== null && x.length > 0) {
-                                return x.toString().toLowerCase()
-                            }
-                        })
-
-                        for (let val = 0; val < s1_lower.length; val++){
-                            if (typeof s1_lower[val] !== 'undefined'
-                                && row[this.filter_column[this.report_type.value]] !== null
-                                && row[this.filter_column[this.report_type.value]].toString().length > 0
-                                && row[this.filter_column[this.report_type.value]].toString() != ''
-                                && row[this.filter_column[this.report_type.value]].toString().includes(lowerSearch)
-                            ){
-                                s1 = true
-                                break
-                            }
-                        }
-                    }
-
-                    ans = s1 ? true : false
-
-                    return ans
-                })
-
-                return filteredRows
-            },
-            selectedRow (val) {
-                let i = 0
-                const matched = this.selected.find((item, index) => {
-                    i = index
-                    return item._row === val._row
-                })
-
-                if (matched) {
-                    this.selected.splice(i, 1)
-                } else {
-                    this.selected.push(val)
-                }
-            },
-            previewReport() {
+            getRequestForApproval (_sources = [], _filter = {}) {
                 let headers = {
                     'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                 }
 
-                this.selected = []
-                this.loadingExcelExport = true
-                this.preview.columns = []
-                this.preview.data = []
+                this.loading = true
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/hr/generate-report`, { data: this.date_range, report_type: this.report_type.value }, { headers })
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/approval`, { sources: _sources, pagination: _filter }, { headers })
                     .then(response => {
-                        const data = response.data
+                        let _sfid = JSON.parse(Cookies.get('sfid'))
 
-                        if (data.length > 0) {
-                            this.preview.columns.push({
-                                name: "_row",
-                                required: true,
-                                label: "#",
-                                align: 'left',
-                                field: row => row.label,
-                                format: val => `${val}`,
-                                sortable: true
-                            })
-
-                            Object.keys(data[0]).forEach((item, index) => {
-                                this.preview.columns.push({
-                                    name: item,
-                                    label: item.replace(/"/g, "").toUpperCase(),
-                                    field: row => row.name,
-                                    format: val => `${val}`,
-                                    align: 'left',
-                                    sortable: true
-                                })
-                            })
-
-                            data.forEach((item, index) => {
-                                item._row = index + 1
-                            });
-
-                            this.preview.data = data
-                            this.row_key = Object.keys(data[0])[0]
-                        } else {
-                            Notify.create({
-                                type: 'warning',
-                                message: `Requested data is empty.`,
-                                closeBtn: false,
-                            })
-                        }
-
-                        this.loadingExcelExport = false
+                        this.rows = response.data.data
+                        this.pagination.rowsNumber = response.data.count
+                        this.isClinic = _sfid.new == '14'
+                        this.loading = false
                     })
-                    .catch(error => {
-                        this.errorMessage = error.message
-
-                        Notify.create({
-                            type: 'negative',
-                            message: error.message,
-                            closeBtn: false,
-                        })
-
+                    .catch((error) => {
                         console.error(error)
-                        this.loadingExcelExport = false
+                        this.loading = false
                     });
             },
-            exportExcel() {
+            filterSource (value) {
+                let sources = this.visibleSources
                 let headers = {
-                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
-                    responseType: 'blob'
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                 }
 
-                this.selected = []
-                this.loadingExcelExport = true
+                this.loading = true
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/hr/generate-report`, { data: this.date_range, report_type: this.report_type.value }, { headers })
+                if (!sources.includes(value) && this.filterSources[value]) {
+                    sources.push(value)
+                } else {
+                    sources.splice(sources.indexOf(value), 1)
+                }
+
+                this.getRequestForApproval(sources, {
+                    startRow: (this.pagination.page - 1) * this.pagination.rowsPerPage,
+                    count: this.pagination.rowsPerPage,
+                    filter: this.search,
+                    page: this.pagination.page,
+                })
+            },
+            getApprovalSources () {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                }
+
+                this.loading = true
+
+                axios.get(`${ process.env.VUE_APP_API_URL }/user/request/sources`, { headers })
                     .then(response => {
-                        const data = response.data
-                        const exportType = exportFromJSON.types.csv
+                        let _arr = []
+                        response.data.forEach(function (value, key) {
+                            _arr[value.source.toLowerCase()] = value.count
+                        });
 
-                        let fileName = `${ this.report_type.label } (${ this.date_range.from } to ${ this.date_range.to })`
-
-                        if (data) {
-                            exportFromJSON({ data, fileName, exportType })
-                        } else {
-                            Notify.create({
-                                type: 'warning',
-                                message: `Requested data is empty.`,
-                                closeBtn: false,
-                            })
-                        }
-
-                        this.loadingExcelExport = false
+                        this.loading = false
+                        this.sources = _arr
                     })
-                    .catch(error => {
-                        this.errorMessage = error.message
-
-                        Notify.create({
-                            type: 'negative',
-                            message: error.response.data.message,
-                            closeBtn: false,
-                        })
-
+                    .catch((error) => {
                         console.error(error)
-                        this.loadingExcelExport = false
+                        this.loading = false
                     });
             },
-            populateDateRange() {
+            submit () {
+                this.diaLoading = true
+
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/approval/action`, {
+                    id: this.action.id,
+                    abbr: this.action.abbr,
+                    source: this.action.source,
+                    action: this.action.action,
+                    reason: this.reason,
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
+                    }
+                })
+                .then(response => {
+                    this.dialog.request = false
+                    this.diaLoading = false
+
+                    this.rows.map((value, key) => {
+                        if (value.request_id == this.action.id) {
+                            this.rows.splice(key, 1)
+                        }
+                    })
+
+                    this.getApprovalSources()
+
+                    Notify.create({
+                        type: 'positive',
+                        message: `Request Submitted Successfully!`,
+                        closeBtn: false,
+                    })
+                })
+                .catch(error => {
+                    this.errorMessage = error.message
+                    this.diaLoading = false
+                    console.error(error)
+                })
+            },
+            clearDialog () {
+                this.clearDate()
+                this.reason = ''
+            },
+            clearDate () {
+                this.date = ''
+                this.date_placeholder = ''
+            },
+            viewRequestDetails (row) {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                }
+
+                this.dialog.details = true
+                this.getRequestInformation(row)
+                this.timeline = []
+
+                axios.get(`${ process.env.VUE_APP_API_URL }/user/request/approval/${ row.request_id }`, { headers })
+                    .then(response => {
+                        let _arr = []
+                        response.data.forEach(function (value, key) {
+                            _arr.push(value)
+                        });
+
+                        this.timeline = _arr
+                    })
+                    .catch((error) => {
+                        console.error(error)
+                        this.loading = false
+                    });
+            },
+            getRequestInformation (row) {
+                let _data = this.rows[this.rows.indexOf(row)]
+
+                this.request_info.requestor = _data.employee_name
+                this.request_info.type = _data.request_type
+                this.request_info.desc = _data.request_description
+                this.request_info.reason = _data.reason
+                this.request_info.attachment = _data.attachment
+                this.date = _data.date_to
+                this.date_placeholder = moment(_data.date_to).format("MMM DD, YYYY")
+            },
+            populateDateRange () {
                 let _format = "MMM DD, YYYY"
 
-                if (this.date_range.from) {
-                    this.date_placeholder = `${ moment(this.date_range.from).format(_format) } to ${ moment(this.date_range.to).format(_format) }`
-                } else {
+                if (this.date) {
                     this.date_placeholder = `${ moment(this.date_range).format(_format) }`
                 }
-            }
-        },
-        mounted() {
 
-        }
+                this.$refs.qDateProxy.hide()
+            },
+            approveRequest (row) {
+                this.action.id = row.request_id
+                this.action.abbr = row.request_abbr
+                this.action.source = row.source
+                this.action.action = "approve"
+                this.dialog.request = true
+                this.getRequestInformation(row)
+            },
+            rejectRequest (row) {
+                this.action.id = row.request_id
+                this.action.abbr = row.request_abbr
+                this.action.source = row.source
+                this.action.action = "reject"
+                this.dialog.request = true
+                this.getRequestInformation(row)
+            },
+            timelineColor (value) {
+                if (value == null) {
+                    return 'grey-4'
+                } else {
+                    return 'primary'
+                }
+            },
+            convertDateFormat (date, format) {
+                if (!moment(date).isValid()) {
+                    return ""
+                }
+
+                return moment(date).format(format)
+            },
+            getDateDiff (from, to) {
+                let _from = moment(from)
+                let _to = moment(to)
+
+                return _to.diff(_from, 'days')
+            },
+            onRequest (props) {
+                const { page, rowsPerPage, sortBy, descending } = props.pagination
+
+                console.log('page')
+                console.log(page)
+
+                this.loading = true
+                this.pagination.rowsNumber = this.getRowsNumberCount(this.search)
+
+                const fetchCount = rowsPerPage === 0 ? props.pagination.rowsNumber : rowsPerPage
+                const startRow = (page - 1) * rowsPerPage
+                const returnedData = this.fetchFromServer(startRow, fetchCount, this.search, sortBy, descending)
+
+                this.pagination.page = page
+                this.pagination.rowsPerPage = rowsPerPage
+                this.pagination.sortBy = sortBy
+                this.pagination.descending = descending
+                this.loading = false
+            },
+            fetchFromServer (startRow, count, filter, sortBy, descending) {
+                this.getRequestForApproval(this.sources, { startRow: startRow, count: count, filter: filter, page: this.pagination.page })
+            },
+            getRowsNumberCount (filter) {
+                if (!filter) {
+                    return this.rows.length
+                }
+
+                let count = 0
+                this.rows.forEach((treat) => {
+                    if (treat.request_description.includes(filter)) {
+                        count++
+                    }
+                })
+
+                return count
+            },
+        },
+        mounted () {
+            this.getApprovalSources()
+            this.onRequest({
+                pagination: this.pagination,
+                filter: this.filter,
+            })
+        },
+        computed: {}
     }
 </script>
 
 <style lang="scss">
-    .report-container {
-        border-radius: 2rem;
-        box-shadow: 0px 20px 20px -5px rgba(0, 0, 0, 0.2);
+    .Request-Approval {
+        .approval-container {
+            border-radius: 2rem;
+            box-shadow: 0px 20px 20px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .q-table--horizontal-separator tbody tr td,
+        .q-table--cell-separator tbody tr td {
+            border-bottom-width: 0 !important;
+        }
+
+        .q-table__bottom {
+            padding-top: 1rem;
+
+            border: none !important;
+        }
+
+        .q-table {
+            tr {
+                th {
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+
+                td {
+                    white-space: break-spaces !important;
+                }
+            }
+        }
+
+        .badge {
+            padding: 0.15rem 0.5rem;
+
+            border-radius: 0.25rem;
+            font-weight: bold;
+            text-transform: uppercase;
+
+            &.badge-primary {
+                background: rgba(0, 117, 184, 0.075);
+                color: var(--q-color-primary);
+            }
+
+            &.badge-danger {
+                background: rgba(193, 0, 21, 0.075);
+                color: var(--q-color-negative);
+            }
+
+            &.badge-green {
+                background: rgba(37, 197, 157, 0.075);
+                color: rgba(37, 197, 157, 1);
+            }
+        }
+
+        .customEllipsis {
+            display: inline-block;
+            vertical-align: top;
+
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .--date-coverage {
+            margin: 0;
+            padding: 0;
+
+            border-radius: 0.25rem;
+            border-spacing: 0;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+
+            .--header td,
+            .--body td,
+            .--footer td {
+                width: 50px;
+                height: 15px;
+                padding: 0;
+
+                font-size: 0.65rem;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .--header td {
+                background: $red-7;
+                color: #FFFFFF;
+                text-transform: uppercase;
+            }
+
+            .--body td {
+                height: 30px !important;
+
+                font-size: 1rem !important;
+            }
+
+            .--footer td {
+
+            }
+        }
+
+        .new-request {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+
+            border-radius: 2rem;
+            box-shadow: 0px 15px 10px -5px rgba(0, 0, 0, 0.2);
+            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        }
     }
 
-    .q-table th {
-        font-weight: bold;
+    .q-dialog {
+        .q-dialog__inner > div {
+            border-radius: 2rem !important;
+        }
+
+        .--required::after {
+            position: absolute;
+            margin-left: 0.25rem;
+
+            content: "*";
+            color: $red-8;
+            font-size: 1rem;
+            font-weight: bold;
+        }
     }
 
-    .q-table tr.selected td {
-        background: rgb(0 117 184 / 100%) !important;
-        color: #FFFFFF;
-        font-weight: bold;
+    .q-field__native,
+    .q-field__input {
+        font-weight: 500 !important;
     }
 </style>

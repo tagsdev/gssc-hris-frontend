@@ -89,11 +89,20 @@ const router = new VueRouter({
 
 import Cookies from 'js-cookie'
 
+let pjinfo = require("../../package.json")
+
 router.beforeEach((to, from, next) => {
     const allowedRoutes = ['/login']
     const accessToken = Cookies.get('accessToken')
 
     if((accessToken) && (accessToken != "undefined")) {
+        if (Cookies.get('_version')) {
+            if (Cookies.get('_version') != pjinfo.version) {
+                Cookies.remove('accessToken')
+                next('/login')
+            }
+        }
+
         if(allowedRoutes.includes(to.path)) {
             next('/')
         } else {
