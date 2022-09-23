@@ -47,10 +47,18 @@
                                 </q-td>
 
                                 <q-td key="reason" :props="props">
-                                    <div style="width: 45vw;" class="customEllipsis">
+                                    <div style="width: 35vw;" class="customEllipsis">
+                                        <span class="q-px-sm q-mr-xs q-py-xs rounded-borders text-weight-bold text-uppercase text-primary" v-if="props.row.attachment">
+                                            <q-icon style="font-size: 24px;" name="las la-paperclip" />
+                                        </span>
                                         {{ props.row.reason }}
+
                                         <q-tooltip v-if="props.row.reason.length > 50" content-style="font-size: 12px" transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-grey-12 text-black">{{ props.row.reason }}</q-tooltip>
                                     </div>
+                                </q-td>
+
+                                <q-td key="actions" :props="props" auto-width class="text-center">
+                                    <q-btn v-if="['pending', 'approved'].includes(props.row.status)" flat size="sm" icon="las la-trash" color="red-4" class="text-uppercase q-px-sm q-py-xs" />
                                 </q-td>
                             </q-tr>
                         </template>
@@ -69,7 +77,7 @@
                 <q-btn class="new-request q-pa-md bg-primary text-white text-weight-bold" @click="request_dialog = true" color="secondary" icon="las la-plus" label="New Request" />
 
                 <q-dialog persistent v-model="request_dialog" class="q-px-xl">
-                    <q-card style="width: 60vw; max-width: 80vw;">
+                    <q-card style="width: 60vw; max-width: 1200px;">
                         <q-card-section class="q-mx-md">
                             <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Employee Leave Request Form</div>
                         </q-card-section>
@@ -171,7 +179,7 @@
 
                                 <div class="col-6 q-px-md">
                                     <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9" :class="{'--required': requireAttachment }">File Attachment(s)</span>
-                                    <q-file v-model="attachments" :required="requireAttachment" color="secondary" class="text-weight-bold" outlined clearable counter multiple :rules="requireAttachment ? [ val => !!val || 'This field is required' ] : []">
+                                    <q-file v-model="files" :required="requireAttachment" color="secondary" class="text-weight-bold attachment" outlined clearable counter :rules="requireAttachment ? [ val => !!val || 'This field is required' ] : []">
                                         <template v-slot:prepend>
                                             <q-icon name="las la-paperclip" />
                                         </template>
@@ -211,7 +219,7 @@
     export default {
         data() {
             return {
-                attachments: null,
+                files: [],
                 columns: [
                     {
                         name: 'date',
@@ -242,6 +250,12 @@
                         field: 'reason',
                         sortable: false
                     },
+                    {
+                        name: 'actions',
+                        align: 'right',
+                        label: 'actions',
+                        sortable: false
+                    },
                 ],
                 date_placeholder: "",
                 date_range: {
@@ -259,6 +273,11 @@
                         label: 'Vacation Leave',
                         value: 'vacation_leave',
                         abbr: 'vl',
+                        inactive: false,
+                    }, {
+                        label: 'Company Leave',
+                        value: 'company_leave',
+                        abbr: 'cl',
                         inactive: false,
                     }, {
                         label: 'Sick Leave',
@@ -288,7 +307,7 @@
                     }, {
                         label: 'Parental Leave (Solo Parent)',
                         value: 'parental_leave',
-                        abbr: 'prl',
+                        abbr: 'pr',
                         inactive: false,
                     },
                 ],
@@ -326,15 +345,11 @@
                         this.loading = false
                     })
                     .catch((error) => {
-                        console.error(error.response.data.message)
+                        console.error(error)
                         this.loading = false
                     });
             },
             submit() {
-                let headers = {
-                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
-                }
-
                 let data = {
                     type: this.leave_type.value,
                     date: {
@@ -348,33 +363,45 @@
                     status: 'pending',
                 };
 
-                if (!this.isDateRange) {
+                if (typeof(this.date_range) == "string") {
                     data.date = {
                         from: this.date_range,
                         to: this.date_range
                     }
                 }
 
-                this.diaLoading = true
+                // this.diaLoading = true
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/submit`, data, { headers })
-                    .then(response => {
-                        this.diaLoading = false
-                        this.request_dialog = false
-                        this.clearDialog()
+                let formData = new FormData()
+                formData.append('file', this.files)
+                formData.append('data', JSON.stringify(data))
+                formData.append('_method', 'PUT')
 
-                        this.rows.unshift(data)
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/submit`, formData, {
+                    headers: {
+                        'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(response => {
+                    // this.diaLoading = false
+                    // this.request_dialog = false
+                    // this.clearDialog()
 
-                        Notify.create({
-                            type: 'positive',
-                            message: `Request Submitted Successfully!`,
-                            closeBtn: false,
-                        })
+                    // this.rows.unshift(data)
+
+                    console.log(response)
+
+                    Notify.create({
+                        type: 'positive',
+                        message: `Request Submitted Successfully!`,
+                        closeBtn: false,
                     })
-                    .catch(error => {
-                        this.errorMessage = error.message
-                        console.error(error)
-                    })
+                })
+                .catch(error => {
+                    this.errorMessage = error.message
+                    console.error(error)
+                })
             },
             populateDateRange() {
                 let _format = "MMM DD, YYYY"
@@ -392,15 +419,16 @@
                 this.isDateRange = this.isHalf == "hd" ? false : true
             },
             leaveType() {
-                let _withDayType = ['vacation_leave', 'sick_leave']
+                let _withHalfDay = ['vacation_leave', 'company_leave', 'sick_leave', 'paternity_leave', 'emergency_leave']
                 let _isDateRange = ['emergency_leave', 'gynecological_leave', 'maternity_leave']
-                    _isDateRange = _isDateRange.concat(_withDayType)
-                let _withAttachment = ['vacation_leave']
+                    _isDateRange = _isDateRange.concat(_withHalfDay)
+                let _requireAttachment = ['sick_leave', 'maternity_leave', 'gynecological_leave', 'emergency_leave', 'paternity_leave', 'parental_leave']
 
                 this.clearDate()
+                this.isHalf = "wd"
                 this.isDateRange = _isDateRange.includes(this.leave_type.value) && (this.isHalf == "wd") ? true : false
-                this.disableDayType = _withDayType.includes(this.leave_type.value) ? false : true
-                this.requireAttachment = _withAttachment.includes(this.leave_type.value) ? false : true
+                this.disableDayType = _withHalfDay.includes(this.leave_type.value) ? false : true
+                this.requireAttachment = _requireAttachment.includes(this.leave_type.value) ? true : false
             },
             clearDialog() {
                 this.clearDate()

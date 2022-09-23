@@ -35,14 +35,14 @@
 
                                 <q-td key="name" :props="props">
                                     <span class="badge q-mr-md" :class="{
-                                        'badge-green': props.row.abbr.toUpperCase() == 'SL',
-                                        'badge-danger': props.row.abbr.toUpperCase() == 'EL',
-                                        'badge-primary': props.row.abbr.toUpperCase() == 'VL',
+                                        'badge-green': ['SL', 'HS', 'GL', 'ML', 'PL', 'HP', 'PR'].includes(props.row.abbr.toUpperCase()),
+                                        'badge-danger': ['EL', 'HE'].includes(props.row.abbr.toUpperCase()),
+                                        'badge-primary': ['VL', 'HV', 'CL', 'HC'].includes(props.row.abbr.toUpperCase()),
                                     }">
                                         <i class="las" :class="{
-                                            'la-temperature-high': props.row.abbr.toUpperCase() == 'SL',
-                                            'la-ambulance': props.row.abbr.toUpperCase() == 'EL',
-                                            'la-umbrella-beach': props.row.abbr.toUpperCase() == 'VL',
+                                            'la-temperature-high': ['SL', 'HS', 'GL', 'ML', 'PL', 'HP', 'PR'].includes(props.row.abbr.toUpperCase()),
+                                            'la-ambulance': ['EL', 'HE'].includes(props.row.abbr.toUpperCase()),
+                                            'la-umbrella-beach': ['VL', 'HV', 'CL', 'HC'].includes(props.row.abbr.toUpperCase()),
                                         }"></i>
                                         {{ props.row.abbr }}
                                     </span>

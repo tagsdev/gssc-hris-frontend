@@ -239,6 +239,7 @@
                         to: moment(this.time.to, "HH:mm A").format("hh:mm A"),
                     },
                     status: 'pending',
+                    abbr: 'ob',
                     location: this.location,
                     reason: this.reason,
                 };
@@ -276,11 +277,11 @@
 
                 if (this.date_range.from) {
                     this.date_placeholder = `${ moment(this.date_range.from).format(_format) } to ${ moment(this.date_range.to).format(_format) }`
-                    this.$refs.qDateProxy.hide()
                 } else {
                     this.date_placeholder = `${ moment(this.date_range).format(_format) }`
-                    this.$refs.qDateProxy.hide()
                 }
+
+                this.$refs.qDateProxy.hide()
             },
             dateRange() {
                 this.date_range = { from: '', to: '' }
