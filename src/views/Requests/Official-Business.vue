@@ -21,25 +21,25 @@
 
                         <template v-slot:body="props">
                             <q-tr :props="props">
-                                <q-td key="date" auto-width :props="props">
-                                    <span v-if="props.row.date.from == props.row.date.to" class="text-weight-bold">{{ props.row.date.from }}</span>
+                                <q-td key="date" :props="props">
+                                    <span v-if="props.row.date.from == props.row.date.to" class="">{{ props.row.date.from }}</span>
                                     <span v-else>
-                                        <span class="text-weight-bold">{{ props.row.date.from }}</span>
+                                        <span class="">{{ props.row.date.from }}</span>
+                                        &nbsp; to &nbsp;
+                                        <span class="">{{ props.row.date.to }}</span>
+                                    </span>
+
+                                    <br />
+
+                                    <span v-if="props.row.time.from == props.row.time.to" class="">{{ props.row.time.from }}</span>
+                                    <span v-else>
+                                        <span class="">{{ props.row.time.from }}</span>
                                         &nbsp; - &nbsp;
-                                        <span class="text-weight-bold">{{ props.row.date.to }}</span>
+                                        <span class="">{{ props.row.time.to }}</span>
                                     </span>
                                 </q-td>
 
-                                <q-td key="time" auto-width :props="props">
-                                    <span v-if="props.row.time.from == props.row.time.to" class="text-weight-bold">{{ props.row.time.from }}</span>
-                                    <span v-else>
-                                        <span class="text-weight-bold">{{ props.row.time.from }}</span>
-                                        &nbsp; - &nbsp;
-                                        <span class="text-weight-bold">{{ props.row.time.to }}</span>
-                                    </span>
-                                </q-td>
-
-                                <q-td key="status" auto-width :props="props" class="text-center">
+                                <q-td key="status" :props="props" class="text-center">
                                     <span class="q-px-sm q-py-xs rounded-borders text-weight-bold text-uppercase"
                                         :class="{
                                             'bg-blue-1 text-blue-8': props.row.status == 'pending',
@@ -62,9 +62,11 @@
 
                 <div v-if="pagesNumber > 1" class="row justify-center q-mt-md">
                     <q-pagination direction-links
-                    v-model="pagination.page"
-                    color="secondary"
-                    :max="pagesNumber" />
+                        push
+                        ellipses
+                        v-model="pagination.page"
+                        color="secondary"
+                        :max="pagesNumber" />
                 </div>
 
                 <q-btn class="new-request q-pa-md bg-primary text-white text-weight-bold" @click="request_dialog = true" color="secondary" icon="las la-plus" label="New Request" />
@@ -156,16 +158,8 @@
                         name: 'date',
                         align: 'right',
                         required: true,
-                        label: 'date coverage',
+                        label: 'coverage',
                         field: 'date',
-                        sortable: false
-                    },
-                    {
-                        name: 'time',
-                        align: 'right',
-                        required: true,
-                        label: 'time coverage',
-                        field: 'time',
                         sortable: false
                     },
                     {

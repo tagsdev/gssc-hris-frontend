@@ -48,7 +48,7 @@
                                     </span>
 
                                     <span class="text-weight-bold">
-                                        {{ props.row.name }}
+                                        {{ props.row.reason }}
                                     </span>
 
                                     <q-tooltip :content-style="{ 'font-size': '14px', 'max-width': '350px' }" transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-grey-9 text-white">{{ props.row.reason }}</q-tooltip>
@@ -71,8 +71,21 @@
         data() {
             return {
                 columns: [
-                    { name: 'date', required: true, label: 'date coverage', align: 'right', field: 'date', sortable: false },
-                    { name: 'name', align: 'left', label: 'name', field: 'name', sortable: false },
+                    {
+                        name: 'date',
+                        required: true,
+                        label: 'date coverage',
+                        align: 'right',
+                        field: 'date',
+                        sortable: false
+                    },
+                    {
+                        name: 'name',
+                        align: 'left',
+                        label: 'information',
+                        field: 'name',
+                        sortable: false
+                    },
                 ],
                 rows: [],
             }

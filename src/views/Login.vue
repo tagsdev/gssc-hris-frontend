@@ -91,6 +91,7 @@
                         Cookies.set('authName', response.data.user.display_name)
                         Cookies.set('jsPermissions', response.data.jsPermissions)
                         Cookies.set('leaves', JSON.stringify(response.data.leaves))
+                        Cookies.set('sfid', JSON.stringify(response.data.user.sfid))
 
                         if (response.data.latestPunch) {
                             Cookies.set('userLatestTap', response.data.latestPunch.tap == 'I' ? "Timed In" : "Timed Out")
