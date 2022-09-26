@@ -18,7 +18,7 @@
                         class="col my-sticky-column-table"
                         no-data-label="All Filed Requests are Approved!"
                         :visible-columns="visibleColumns"
-                        :filter="filter"
+                        :filter="search"
                         @request="onRequest"
                     >
                         <template v-slot:top-left>
@@ -98,7 +98,7 @@
                         </template>
 
                         <template v-slot:top-right>
-                            <q-input borderless dense debounce="500" v-model="search" @input="onRequest" placeholder="Search">
+                            <q-input borderless dense debounce="500" v-model="search" placeholder="Search">
                                 <template v-slot:append>
                                     <q-icon name="search" />
                                 </template>
@@ -362,7 +362,6 @@
                     details: false,
                     request: false,
                 },
-                filter: '',
                 filterSources: {
                     leave: false,
                     ob: false,
@@ -373,11 +372,9 @@
                 isClinic: false,
                 loading: false,
                 pagination: {
-                    page: 0,
+                    page: 1,
                     rowsPerPage: 5,
-                    rowsNumber: 5,
-                    sortBy: 'asc',
-                    descending: false,
+                    rowsNumber: 5
                 },
                 reason: "",
                 request_info: {
@@ -398,17 +395,22 @@
             }
         },
         methods: {
-            getRequestForApproval (_sources = [], _filter = {}) {
+            getRequestForApproval (_sources, _filter) {
                 let headers = {
                     'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                 }
 
+                let params = { sources: _sources, pagination: _filter }
+                
                 this.loading = true
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/approval`, { sources: _sources, pagination: _filter }, { headers })
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/approval`, params, { headers })
                     .then(response => {
                         let _sfid = JSON.parse(Cookies.get('sfid'))
 
+                        this.pagination.page = params.pagination.page
+                        this.pagination.rowsPerPage = params.pagination.rowsPerPage
+                
                         this.rows = response.data.data
                         this.pagination.rowsNumber = response.data.count
                         this.isClinic = _sfid.new == '14'
@@ -434,10 +436,9 @@
                 }
 
                 this.getRequestForApproval(sources, {
-                    startRow: (this.pagination.page - 1) * this.pagination.rowsPerPage,
-                    count: this.pagination.rowsPerPage,
-                    filter: this.search,
                     page: this.pagination.page,
+                    rowsPerPage: this.pagination.rowsPerPage,
+                    filter: this.search,
                 })
             },
             getApprovalSources () {
@@ -588,47 +589,23 @@
                 return _to.diff(_from, 'days')
             },
             onRequest (props) {
-                const { page, rowsPerPage, sortBy, descending } = props.pagination
+                const { page, rowsPerPage } = props.pagination
+                const filter = props.filter
 
-                console.log('page')
-                console.log(page)
-
-                this.loading = true
-                this.pagination.rowsNumber = this.getRowsNumberCount(this.search)
-
-                const fetchCount = rowsPerPage === 0 ? props.pagination.rowsNumber : rowsPerPage
-                const startRow = (page - 1) * rowsPerPage
-                const returnedData = this.fetchFromServer(startRow, fetchCount, this.search, sortBy, descending)
-
-                this.pagination.page = page
-                this.pagination.rowsPerPage = rowsPerPage
-                this.pagination.sortBy = sortBy
-                this.pagination.descending = descending
-                this.loading = false
-            },
-            fetchFromServer (startRow, count, filter, sortBy, descending) {
-                this.getRequestForApproval(this.sources, { startRow: startRow, count: count, filter: filter, page: this.pagination.page })
-            },
-            getRowsNumberCount (filter) {
-                if (!filter) {
-                    return this.rows.length
+                let params = {
+                    page,
+                    rowsPerPage,
+                    filter,
                 }
 
-                let count = 0
-                this.rows.forEach((treat) => {
-                    if (treat.request_description.includes(filter)) {
-                        count++
-                    }
-                })
-
-                return count
+                this.getRequestForApproval(this.sources, params)
             },
         },
         mounted () {
             this.getApprovalSources()
             this.onRequest({
                 pagination: this.pagination,
-                filter: this.filter,
+                filter: this.search,
             })
         },
         computed: {}
