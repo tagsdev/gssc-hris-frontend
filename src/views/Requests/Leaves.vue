@@ -209,7 +209,7 @@
 
                                 <div class="col-6 q-px-md">
                                     <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9" :class="{'--required': requireAttachment }">File Attachment(s)</span>
-                                    <q-file v-model="files" :required="requireAttachment" color="secondary" class="text-weight-bold attachment" outlined clearable counter :rules="requireAttachment ? [ val => !!val || 'This field is required' ] : []">
+                                    <q-file v-model="files" color="secondary" class="text-weight-bold attachment" outlined clearable counter :reactive-rules="true" :rules="[ val => (!requireAttachment || requireAttachment && !!val) || 'This field is required' ]">
                                         <template v-slot:prepend>
                                             <q-icon name="las la-paperclip" />
                                         </template>
@@ -698,9 +698,9 @@
         computed: {
             isComplete () {
                 if (this.requireAttachment) {
-                    return this.leave_type.value.length && this.isHalf && this.files && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
+                    return this.leave_type.value && this.isHalf && this.files && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
                 } else {
-                    return this.leave_type.value.length && this.isHalf && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
+                    return this.leave_type.value && this.isHalf && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
                 }
             },
             pagesNumber () {
@@ -842,5 +842,9 @@
     .q-field__native,
     .q-field__input {
         font-weight: 500 !important;
+    }
+
+    .q-field__messages,  .q-field__counter {        
+        font-weight: 400 !important;
     }
 </style>
