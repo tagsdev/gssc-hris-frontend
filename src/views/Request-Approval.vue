@@ -388,7 +388,7 @@
                 rows: [],
                 rowsOptions: [5, 10, 15, 20, 50, 0],
                 search: "",
-                sources: [],
+                sources: {},
                 timeline: [],
                 visibleColumns: ['employee_name', 'description', 'date_filed', 'actions'],
                 visibleSources: [],
@@ -423,11 +423,6 @@
             },
             filterSource (value) {
                 let sources = this.visibleSources
-                let headers = {
-                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
-                }
-
-                this.loading = true
 
                 if (!sources.includes(value) && this.filterSources[value]) {
                     sources.push(value)
@@ -436,7 +431,7 @@
                 }
 
                 this.getRequestForApproval(sources, {
-                    page: this.pagination.page,
+                    page: 1, // return to page 1 on select of source
                     rowsPerPage: this.pagination.rowsPerPage,
                     filter: this.search,
                 })
@@ -450,13 +445,13 @@
 
                 axios.get(`${ process.env.VUE_APP_API_URL }/user/request/sources`, { headers })
                     .then(response => {
-                        let _arr = []
-                        response.data.forEach(function (value, key) {
-                            _arr[value.source.toLowerCase()] = value.count
+                        let sources = {}
+                        response.data.forEach(function (value) {
+                            sources[value.source.toLowerCase()] = value.count
                         });
 
                         this.loading = false
-                        this.sources = _arr
+                        this.sources = sources
                     })
                     .catch((error) => {
                         console.error(error)
@@ -598,7 +593,7 @@
                     filter,
                 }
 
-                this.getRequestForApproval(this.sources, params)
+                this.getRequestForApproval(this.visibleSources, params)
             },
         },
         mounted () {
