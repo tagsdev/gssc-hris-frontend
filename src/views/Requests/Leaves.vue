@@ -375,7 +375,12 @@
                 isLate: false,
                 disableDayType: false,
                 leaves: [],
-                leave_type: "",
+                leave_type: {
+                    label: '',
+                    value: '',
+                    abbr: '',
+                    inactive: false
+                },
                 leave_types: [
                     {
                         label: 'Vacation Leave',
@@ -693,9 +698,9 @@
         computed: {
             isComplete () {
                 if (this.requireAttachment) {
-                    return this.leave_type.length && this.isHalf && this.files && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
+                    return this.leave_type.value.length && this.isHalf && this.files && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
                 } else {
-                    return this.leave_type && this.isHalf && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
+                    return this.leave_type.value.length && this.isHalf && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
                 }
             },
             pagesNumber () {
