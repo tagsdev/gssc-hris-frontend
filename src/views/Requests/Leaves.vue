@@ -693,9 +693,9 @@
         computed: {
             isComplete () {
                 if (this.requireAttachment) {
-                    return this.leave_type.value.length && this.isHalf && this.files && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
+                    return this.leave_type.length && this.isHalf && this.files && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
                 } else {
-                    return this.leave_type && this.isHalf && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
+                    return this.leave_type && this.isHalf && ((this.date_range.from.length && this.date_range.to.length) || (this.date_range.length)) && this.reason.length
                 }
             },
             pagesNumber () {
