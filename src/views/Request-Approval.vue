@@ -483,6 +483,10 @@
                     })
 
                     this.getApprovalSources()
+                    this.onRequest({
+                        pagination: this.pagination,
+                        filter: this.search,
+                    })
 
                     Notify.create({
                         type: 'positive',

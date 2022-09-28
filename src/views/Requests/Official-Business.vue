@@ -8,15 +8,28 @@
                 </span>
 
                 <div class="q-pa-xs q-mt-md">
-                    <q-table flat hide-pagination :data="rows"
-                    :loading="loading"
-                    :columns="columns"
-                    :rows-per-page-options="rowsOptions"
-                    :pagination.sync="pagination"
-                    class="col my-sticky-column-table"
-                    no-data-label="No data found">
+                    <q-table 
+                        flat
+                        :data="rows"
+                        :loading="loading"
+                        :columns="columns"
+                        :rows-per-page-options="rowsOptions"
+                        :pagination.sync="pagination"
+                        class="col my-sticky-column-table"
+                        no-data-label="No data found"
+                        :filter="search"
+                        @request="onRequest"
+                    >
                         <template v-slot:loading>
                             <q-inner-loading showing color="primary" />
+                        </template>
+
+                        <template v-slot:top-right>
+                            <q-input borderless dense debounce="500" v-model="search" placeholder="Search">
+                                <template v-slot:append>
+                                    <q-icon name="search" />
+                                </template>
+                            </q-input>
                         </template>
 
                         <template v-slot:body="props">
@@ -58,15 +71,6 @@
                             </q-tr>
                         </template>
                     </q-table>
-                </div>
-
-                <div v-if="pagesNumber > 1" class="row justify-center q-mt-md">
-                    <q-pagination direction-links
-                        push
-                        ellipses
-                        v-model="pagination.page"
-                        color="secondary"
-                        :max="pagesNumber" />
                 </div>
 
                 <q-btn class="new-request q-pa-md bg-primary text-white text-weight-bold" @click="request_dialog = true" color="secondary" icon="las la-plus" label="New Request" />
@@ -194,29 +198,47 @@
                 rows: [],
                 rowsOptions: [5, 10, 15, 20, 50, 0],
                 pagination: {
-                    rowsPerPage: 10,
-                    page: 1
+                    page: 1,
+                    rowsPerPage: 5,
+                    rowsNumber: 5,
                 },
+                search: "",
                 request_dialog: false,
             }
         },
         methods: {
-            getTeamLeaveTracker() {
+            getTeamLeaveTracker(params) {
                 let headers = {
                     'Authorization': `Bearer ${ Cookies.get('accessToken') }`
                 }
 
                 this.loading = true
 
-                axios.get(`${ process.env.VUE_APP_API_URL }/user/request/ob`, { headers })
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/ob`, params, { headers })
                     .then(response => {
-                        this.rows = response.data
+                        this.pagination.page = params.page
+                        this.pagination.rowsPerPage = params.rowsPerPage
+
+                        this.rows = response.data.data
+                        this.pagination.rowsNumber = response.data.count
                         this.loading = false
                     })
                     .catch((error) => {
                         console.error(error.response.data.message)
                         this.loading = false
                     });
+            },
+            onRequest (props) {
+                const { page, rowsPerPage } = props.pagination
+                const filter = props.filter
+
+                let params = {
+                    page,
+                    rowsPerPage,
+                    filter,
+                }
+
+                this.getTeamLeaveTracker(params)
             },
             submit() {
                 let headers = {
@@ -253,7 +275,10 @@
                         this.request_dialog = false
                         this.clearDialog()
 
-                        this.rows.unshift(data)
+                        this.onRequest({
+                            pagination: this.pagination,
+                            filter: this.search,
+                        })
 
                         Notify.create({
                             type: 'positive',
@@ -283,7 +308,10 @@
             },
             clearDialog() {
                 this.clearDate()
-                this.time = ''
+                this.time = {
+                    from: '',
+                    to: ''
+                }
                 this.location = ''
                 this.reason = ''
             },
@@ -299,15 +327,15 @@
             },
         },
         mounted() {
-            this.getTeamLeaveTracker()
+            this.onRequest({
+                pagination: this.pagination,
+                filter: this.search,
+            })
         },
         computed: {
             isComplete () {
                 return ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.time.from && this.time.to && this.location && this.reason
             },
-            pagesNumber () {
-                return Math.ceil(this.rows.length / this.pagination.rowsPerPage)
-            }
         }
     }
 </script>
