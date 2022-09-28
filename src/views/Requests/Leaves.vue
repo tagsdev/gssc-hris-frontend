@@ -486,6 +486,7 @@
             submit () {
                 let data = {
                     type: this.leave_type.value,
+                    type_label: this.leave_type.label,
                     date: {
                         from: this.date_range.from,
                         to: this.date_range.to

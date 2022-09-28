@@ -476,12 +476,6 @@
                     this.dialog.request = false
                     this.diaLoading = false
 
-                    this.rows.map((value, key) => {
-                        if (value.request_id == this.action.id) {
-                            this.rows.splice(key, 1)
-                        }
-                    })
-
                     this.getApprovalSources()
                     this.onRequest({
                         pagination: this.pagination,
