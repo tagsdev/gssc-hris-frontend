@@ -414,7 +414,12 @@
                     }, {
                         label: 'Parental Leave (Solo Parent)',
                         value: 'parental_leave',
-                        abbr: 'pr',
+                        abbr: 'pl2',
+                        inactive: false,
+                    }, {
+                        label: 'Parental Leave (for EMLL)',
+                        value: 'parental_leave_emll',
+                        abbr: 'pl3',
                         inactive: false,
                     },
                 ],

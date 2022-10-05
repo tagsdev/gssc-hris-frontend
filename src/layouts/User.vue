@@ -100,8 +100,7 @@
                     </q-menu>
                 </q-item>
 
-                <!-- approve-filed-requests -->
-                <q-item v-if="true" clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Request-Approval' }">
+                <q-item v-if="can('approve-filed-requests')" clickable exact active-class="sidebar-link--active" v-ripple :to="{ name: 'Request-Approval' }">
                     <q-item-section avatar class="q-pa-none">
                         <q-icon name="las la-tasks" />
                     </q-item-section>
