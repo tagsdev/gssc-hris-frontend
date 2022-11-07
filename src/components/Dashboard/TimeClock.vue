@@ -1,54 +1,56 @@
 <template>
-    <q-card dark class="bg-primary inoutclock q-pa-md q-mr-md">
-        <transition-group appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-            <q-card-section class="q-pa-none" v-show="!loading" key="time">
-                <div class="row justify-between items-center">
-                    <div class="col-3 text-center">
-                        <p class="time relative-position">{{ hours }} <span class="time-separator absolute">:</span></p>
-                        <p class="time-label">Hours</p>
+    <div class="col-xl-12">
+        <q-card dark class="bg-primary inoutclock q-pa-md">
+            <transition-group appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                <q-card-section class="q-pa-none" v-show="!loading" key="time">
+                    <div class="row justify-between items-center">
+                        <div class="col-3 text-center">
+                            <p class="time relative-position">{{ hours }} <span class="time-separator absolute">:</span></p>
+                            <p class="time-label">Hours</p>
+                        </div>
+
+                        <div class="col-3 text-center">
+                            <p class="time relative-position">{{ minutes }} <span class="time-separator absolute">:</span></p>
+                            <p class="time-label">Minutes</p>
+                        </div>
+
+                        <div class="col-3 text-center">
+                            <p class="time relative-position">{{ seconds }} <span class="time-separator absolute">:</span></p>
+                            <p class="time-label">Seconds</p>
+                        </div>
+
+                        <div class="col-3 text-center">
+                            <p class="time relative-position">{{ period }}</p>
+                            <p class="time-label">Period</p>
+                        </div>
                     </div>
+                </q-card-section>
 
-                    <div class="col-3 text-center">
-                        <p class="time relative-position">{{ minutes }} <span class="time-separator absolute">:</span></p>
-                        <p class="time-label">Minutes</p>
+                <q-card-section class="q-pa-none" v-show="!loading" key="inout">
+                    <div class="row justify-center">
+                        <div class="col-6 text-center">
+                            <q-btn flat icon="login" label="Time In" class="inout" :class="[ clockedIn ? 'inactive' : 'active' ]" :disable="clockedIn" @click="inout"></q-btn>
+                        </div>
+
+                        <div class="col-6 text-center">
+                            <q-btn flat icon="logout" label="Time Out" class="inout" :class="[ clockedIn ? 'active' : 'inactive' ]" :disable="!clockedIn" @click="inout"></q-btn>
+                        </div>
                     </div>
+                </q-card-section>
 
-                    <div class="col-3 text-center">
-                        <p class="time relative-position">{{ seconds }} <span class="time-separator absolute">:</span></p>
-                        <p class="time-label">Seconds</p>
-                    </div>
+                <q-card-section class="q-pa-none" v-show="!loading" key="lastactivity">
+                    <p v-show="latestPunchTime.length" class="text-center last-activity">Last Activity: {{ latestPunchTap }} {{ latestPunchTime }}</p>
+                </q-card-section>
+            </transition-group>
 
-                    <div class="col-3 text-center">
-                        <p class="time relative-position">{{ period }}</p>
-                        <p class="time-label">Period</p>
-                    </div>
-                </div>
-            </q-card-section>
-
-            <q-card-section class="q-pa-none" v-show="!loading" key="inout">
-                <div class="row justify-center">
-                    <div class="col-6 text-center">
-                        <q-btn flat icon="login" label="Time In" class="inout" :class="[ clockedIn ? 'inactive' : 'active' ]" :disable="clockedIn" @click="inout"></q-btn>
-                    </div>
-
-                    <div class="col-6 text-center">
-                        <q-btn flat icon="logout" label="Time Out" class="inout" :class="[ clockedIn ? 'active' : 'inactive' ]" :disable="!clockedIn" @click="inout"></q-btn>
-                    </div>
-                </div>
-            </q-card-section>
-
-            <q-card-section class="q-pa-none" v-show="!loading" key="lastactivity">
-                <p v-show="latestPunchTime.length" class="text-center last-activity">Last Activity: {{ latestPunchTap }} {{ latestPunchTime }}</p>
-            </q-card-section>
-        </transition-group>
-
-        <q-inner-loading :showing="loading">
-            <template v-slot:default>
-                <q-spinner size="xl" />
-                <span class="text-subtitle1 q-mt-md">Loading Time Clock</span>
-            </template>
-        </q-inner-loading>
-    </q-card>
+            <q-inner-loading :showing="loading">
+                <template v-slot:default>
+                    <q-spinner size="xl" />
+                    <span class="text-subtitle1 q-mt-md">Loading Time Clock</span>
+                </template>
+            </q-inner-loading>
+        </q-card>
+    </div>
 </template>
 
 <script>

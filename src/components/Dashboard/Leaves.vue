@@ -1,6 +1,6 @@
 <template>
     <div class="row q-col-gutter-md q-mr-md">
-        <div class="col">
+        <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <q-card class="bg-white text-black q-pa-md leaves-panels">
                 <div class="row">
                     <div class="col q-mb-xl">
@@ -43,7 +43,7 @@
             </q-card>
         </div>
 
-        <div class="col">
+        <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <q-card class="bg-white text-black q-pa-md leaves-panels">
                 <div class="row">
                     <div class="col q-mb-xl">
@@ -86,7 +86,7 @@
             </q-card>
         </div>
 
-        <div class="col">
+        <div class="col col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <q-card class="bg-white text-black q-pa-md leaves-panels">
                 <div class="row">
                     <div class="col q-mb-xl">
@@ -128,6 +128,10 @@
                 </div>
             </q-card>
         </div>
+
+        <div class="col col-xl-3 col-lg-6 col-md-12 col-sm-12 col-xs-12 widget-1-order">
+            <time-clock></time-clock>
+        </div>
     </div>
 </template>
 
@@ -136,6 +140,9 @@
 
     export default {
         name: 'Leaves',
+        components: {
+            TimeClock: () => import('../../components/Dashboard/TimeClock'),
+        },
         data() {
             return {
                 leaves: [],
@@ -192,6 +199,18 @@
             margin-bottom: 0;
 
             font-size: 85%;
+        }
+    }
+
+    @media (min-width: 0px) {
+        .widget-1-order {
+            order: -10000 !important;
+        }
+    }
+
+    @media (min-width: 1920px) {
+        .widget-1-order {
+            order: 10000 !important;
         }
     }
 </style>

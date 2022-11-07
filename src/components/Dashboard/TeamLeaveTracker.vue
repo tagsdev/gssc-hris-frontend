@@ -1,6 +1,6 @@
 <template>
     <div class="row q-col-gutter-lg q-mr-md">
-        <div class="col">
+        <div class="col col-md-12">
             <q-card dark class="bg-white text-black q-pa-md leave-tracker-card">
                 <div class="row">
                     <div class="col self-center">
