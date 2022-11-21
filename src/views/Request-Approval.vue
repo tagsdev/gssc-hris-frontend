@@ -2,12 +2,14 @@
     <q-page padding :class="$route.name" class="bg-grey-4">
         <div class="row justify-center">
             <div class="col-xs-12 bg-white q-px-xl q-py-xl approval-container">
-                <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Request Approval</h4>
-                <span class="text-grey-6">
-                    Employee Filed Requests for Approval
-                </span>
+                <div class="page-header">
+                    <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Request Approval</h4>
+                    <span class="text-grey-6">
+                        Employee Filed Requests for Approval
+                    </span>
+                </div>
 
-                <div class="q-pa-xs q-mt-md">
+                <div class="q-pa-xs" style="margin-top: -60px;">
                     <q-table flat
                         :data="rows"
                         :loading="loading"
@@ -373,8 +375,8 @@
                 loading: false,
                 pagination: {
                     page: 1,
-                    rowsPerPage: 5,
-                    rowsNumber: 5
+                    rowsPerPage: 10,
+                    rowsNumber: 10
                 },
                 reason: "",
                 request_info: {
@@ -634,6 +636,10 @@
                     white-space: break-spaces !important;
                 }
             }
+        }
+
+        .q-table__card {
+            background: transparent;
         }
 
         .badge {

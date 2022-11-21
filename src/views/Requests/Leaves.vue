@@ -2,12 +2,14 @@
     <q-page padding :class="$route.name" class="bg-grey-4">
         <div class="row justify-center">
             <div class="col-xs-12 bg-white q-px-xl q-py-xl leaves-container">
-                <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Leave Requests</h4>
-                <span class="text-grey-6">
-                    User-Requested Leaves
-                </span>
+                <div class="page-header">
+                    <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Leave Requests</h4>
+                    <span class="text-grey-6">
+                        User-Requested Leaves
+                    </span>
+                </div>
 
-                <div class="q-pa-xs q-mt-md">
+                <div class="q-pa-xs" style="margin-top: -60px;">
                     <q-table 
                         flat    
                         :data="rows"
@@ -36,7 +38,7 @@
                             <q-tr :props="props">
                                 <q-td key="date" :props="props" class="cursor-pointer" @click="viewRequestDetails(props.row)">
                                     <div align="right">
-                                        <table class="--date-coverage">
+                                        <!-- <table class="--date-coverage">
                                             <tr class="--header">
                                                 <td :colspan="convertDateFormat(props.row.date.from, 'MMM') != convertDateFormat(props.row.date.to, 'MMM') ? 1 : 3">{{ convertDateFormat(props.row.date.from, 'MMM') }}</td>
                                                 <td v-if="getDateDiff(props.row.date.from, props.row.date.to) > 1 && (convertDateFormat(props.row.date.from, 'MMM') != convertDateFormat(props.row.date.to, 'MMM'))">&nbsp;</td>
@@ -60,7 +62,13 @@
                                                     {{ convertDateFormat(props.row.date.to, 'YYYY') }}
                                                 </td>
                                             </tr>
-                                        </table>
+                                        </table> -->
+                                        <span v-if="props.row.date.from == props.row.date.to" class="">{{ props.row.date.from }}</span>
+                                        <span v-else>
+                                            <span class="">{{ props.row.date.from }}</span>
+                                            &nbsp; to &nbsp;
+                                            <span class="">{{ props.row.date.to }}</span>
+                                        </span>
                                     </div>
                                 </q-td>
 
@@ -91,7 +99,7 @@
                                 </q-td>
 
                                 <q-td key="actions" :props="props" class="text-center">
-                                    <q-btn v-if="!['cancelled', 'expired', 'transacted'].includes(props.row.status.toLowerCase())" flat size="md" icon="las la-trash" color="red-4" class="text-uppercase q-px-sm q-py-xs" @click="cancelDialog(props.row)" />
+                                    <q-btn v-if="!['cancelled', 'expired', 'transacted'].includes(props.row.status.toLowerCase())" flat size="sm" icon="las la-trash" color="red-4" class="text-uppercase q-px-sm q-py-xs" @click="cancelDialog(props.row)" />
                                 </q-td>
                             </q-tr>
                         </template>
@@ -439,8 +447,8 @@
                 rowsOptions: [5, 10, 15, 20, 50, 0],
                 pagination: {
                     page: 1, 
-                    rowsPerPage: 5,
-                    rowsNumber: 5
+                    rowsPerPage: 10,
+                    rowsNumber: 10
                 },
                 request_dialog: false,
                 search: '',
@@ -719,6 +727,10 @@
             }
         }
 
+        .q-table__card {
+            background: transparent;
+        }
+
         .badge {
             padding: 0.15rem 0.5rem;
 
@@ -790,7 +802,7 @@
         }
 
         .new-request {
-            position: absolute;
+            position: fixed;
             bottom: 2rem;
             right: 2rem;
 

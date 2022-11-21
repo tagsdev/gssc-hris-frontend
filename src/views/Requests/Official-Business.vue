@@ -2,12 +2,14 @@
     <q-page padding :class="$route.name" class="bg-grey-4">
         <div class="row justify-center">
             <div class="col-xs-12 bg-white q-px-xl q-py-xl ob-container">
-                <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Official Business Requests</h4>
-                <span class="text-grey-6">
-                    User-Requested Official Business
-                </span>
+                <div class="page-header">
+                    <h4 class="text-uppercase" style="margin-top: 0; margin-bottom: 0;">Official Business Requests</h4>
+                    <span class="text-grey-6">
+                        User-Requested Official Business
+                    </span>
+                </div>
 
-                <div class="q-pa-xs q-mt-md">
+                <div class="q-pa-xs" style="margin-top: -60px;">
                     <q-table 
                         flat
                         :data="rows"
@@ -199,8 +201,8 @@
                 rowsOptions: [5, 10, 15, 20, 50, 0],
                 pagination: {
                     page: 1,
-                    rowsPerPage: 5,
-                    rowsNumber: 5,
+                    rowsPerPage: 10,
+                    rowsNumber: 10,
                 },
                 search: "",
                 request_dialog: false,
@@ -365,6 +367,10 @@
                     text-transform: uppercase;
                 }
             }
+        }
+
+        .q-table__card {
+            background: transparent;
         }
 
         .customEllipsis {
