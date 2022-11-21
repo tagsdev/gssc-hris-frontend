@@ -115,7 +115,7 @@
                             <q-tr :props="props">
                                 <q-td key="employee_name" :props="props" auto-width class="text-center cursor-pointer" @click="viewRequestDetails(props.row)">
                                     <div align="right">
-                                        <table class="--date-coverage">
+                                        <!-- <table class="--date-coverage">
                                             <tr class="--header">
                                                 <td :colspan="convertDateFormat(props.row.date_from, 'MMM') != convertDateFormat(props.row.date_to, 'MMM') ? 1 : 3">{{ convertDateFormat(props.row.date_from, 'MMM') }}</td>
                                                 <td v-if="getDateDiff(props.row.date_from, props.row.date_to) > 1 && (convertDateFormat(props.row.date_from, 'MMM') != convertDateFormat(props.row.date_to, 'MMM'))">&nbsp;</td>
@@ -139,13 +139,19 @@
                                                     {{ convertDateFormat(props.row.date_to, 'YYYY') }}
                                                 </td>
                                             </tr>
-                                        </table>
+                                        </table> -->
+                                        <span v-if="props.row.date_from == props.row.date_to" class="">{{ convertDateFormat(props.row.date_from, 'MMM DD, YYYY') }}</span>
+                                        <span v-else>
+                                            <span class="">{{ convertDateFormat(props.row.date_from, 'MMM DD, YYYY') }}</span>
+                                            &nbsp; to &nbsp;
+                                            <span class="">{{ convertDateFormat(props.row.date_to, 'MMM DD, YYYY') }}</span>
+                                        </span>
                                     </div>
                                 </q-td>
 
                                 <q-td key="description" :props="props" class="text-center cursor-pointer" @click="viewRequestDetails(props.row)">
                                     <span class="text-weight-bold text-uppercase">{{ props.row.employee_name }}</span>
-                                    <br />
+                                    &nbsp; - &nbsp;
                                     <span class="text-weight-bold text-uppercase">{{ props.row.request_type }}</span>
                                     <br />
                                     <span class="q-pr-sm q-mr-xs q-py-xs rounded-borders text-weight-bold text-uppercase text-primary" v-if="props.row.attachment">
@@ -164,8 +170,8 @@
                                 </q-td>
 
                                 <q-td key="actions" :props="props">
-                                    <q-btn flat size="md" icon="las la-thumbs-up" color="blue-7" class="text-uppercase q-py-xs" @click="approveRequest(props.row)" />
-                                    <q-btn flat size="md" icon="las la-thumbs-down" color="red-7" class="text-uppercase q-py-xs" @click="rejectRequest(props.row)" />
+                                    <q-btn flat size="sm" icon="las la-thumbs-up" color="blue-7" class="text-uppercase q-py-xs" @click="approveRequest(props.row)" />
+                                    <q-btn flat size="sm" icon="las la-thumbs-down" color="red-7" class="text-uppercase q-py-xs" @click="rejectRequest(props.row)" />
                                 </q-td>
                             </q-tr>
                         </template>
@@ -203,7 +209,7 @@
                                 </div>
                             </div>
 
-                            <div v-if="this.isClinic" class="row justify-content-end q-px-md">
+                            <div v-if="can('clinic-concerns')" class="row justify-content-end q-px-md">
                                 <div class="col-6 q-px-md">
                                     <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Date</span>
                                     <q-input outlined v-model="date_placeholder" color="secondary" @click="$refs.qDateProxy.show()">
@@ -315,7 +321,7 @@
                         label: 'coverage',
                         sortable: false,
                         headerStyle: {
-                            'width': '12.5% !important'
+                            'width': '17.5% !important'
                         },
                     },
                     {
@@ -371,7 +377,6 @@
                     change_shift: false,
                     payroll_complaint: false,
                 },
-                isClinic: false,
                 loading: false,
                 pagination: {
                     page: 1,
@@ -415,7 +420,6 @@
                 
                         this.rows = response.data.data
                         this.pagination.rowsNumber = response.data.count
-                        this.isClinic = _sfid.new == '14'
                         this.loading = false
                     })
                     .catch((error) => {
@@ -469,6 +473,7 @@
                     source: this.action.source,
                     action: this.action.action,
                     reason: this.reason,
+                    date_to: this.date,
                 }, {
                     headers: {
                         'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
