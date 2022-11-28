@@ -23,7 +23,7 @@
                         :filter="search"
                         @request="onRequest"
                     >
-                        <template v-slot:top-left>
+                        <template v-slot:top-right>
                             <div class="q-pa-md">
                                 <div class="q-gutter-xs">
                                     <q-chip
@@ -97,9 +97,17 @@
                                     </q-chip>
                                 </div>
                             </div>
+
+                            <div class="q-pa-md">
+                                <q-input borderless dense debounce="500" v-model="search" placeholder="Search">
+                                    <template v-slot:append>
+                                        <q-icon name="search" />
+                                    </template>
+                                </q-input>
+                            </div>
                         </template>
 
-                        <template v-slot:top-right>
+                        <template v-slot:top-center>
                             <q-input borderless dense debounce="500" v-model="search" placeholder="Search">
                                 <template v-slot:append>
                                     <q-icon name="search" />
