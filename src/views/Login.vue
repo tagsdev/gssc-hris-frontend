@@ -91,6 +91,7 @@
                         Cookies.set('authName', response.data.user.display_name)
                         Cookies.set('jsPermissions', response.data.jsPermissions)
                         Cookies.set('leaves', JSON.stringify(response.data.leaves))
+                        Cookies.set('leaveEligibility', JSON.stringify(response.data.leave_eligibility))
                         Cookies.set('sfid', JSON.stringify(response.data.user.sfid))
 
                         if (response.data.latestPunch) {
