@@ -178,9 +178,17 @@
                             <div class="row q-px-md" style="padding-top: 1rem;">
                                 <div class="col q-px-md">
                                     <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Leave Type</span>
-                                    <q-select outlined v-model="leave_type" @input="leaveType()" :options="leave_types" option-disable="inactive" color="secondary" :rules="[val => !!val || 'This field is required']">
+                                    <q-select outlined v-model="leave_type" @input="leaveType()" :options="leave_types" color="secondary" :rules="[val => !!val || 'This field is required']">
                                         <template v-slot:selected>
                                             <strong v-if="leave_type.value">{{ leave_type.label }}</strong>
+                                        </template>
+
+                                        <template v-slot:option="scope">
+                                            <q-item v-if="leave_eligibilities.includes(scope.opt.abbr.toUpperCase()) || scope.opt.generic" v-bind="scope.itemProps" v-on="scope.itemEvents">
+                                                <q-item-section>
+                                                    <q-item-label v-html="scope.opt.label" />
+                                                </q-item-section>
+                                            </q-item>
                                         </template>
                                     </q-select>
                                 </div>
@@ -381,54 +389,48 @@
                     label: '',
                     value: '',
                     abbr: '',
-                    inactive: false
                 },
                 leave_types: [
                     {
                         label: 'Vacation Leave',
                         value: 'vacation_leave',
                         abbr: 'vl',
-                        inactive: false,
+                        generic: true,
                     }, {
                         label: 'Company Leave',
                         value: 'company_leave',
                         abbr: 'cl',
-                        inactive: false,
+                        generic: true,
                     }, {
                         label: 'Sick Leave',
                         value: 'sick_leave',
                         abbr: 'sl',
-                        inactive: false,
+                        generic: true,
                     }, {
                         label: 'Emergency Leave',
                         value: 'emergency_leave',
                         abbr: 'el',
-                        inactive: false,
+                        generic: true,
                     }, {
                         label: 'Maternity Leave',
                         value: 'maternity_leave',
                         abbr: 'ml',
-                        inactive: false,
                     }, {
                         label: 'Paternity Leave',
                         value: 'paternity_leave',
                         abbr: 'pl',
-                        inactive: false,
                     }, {
                         label: 'Gynecological Leave',
                         value: 'gynecological_leave',
                         abbr: 'gl',
-                        inactive: false,
                     }, {
                         label: 'Parental Leave (Solo Parent)',
                         value: 'parental_leave',
                         abbr: 'pl2',
-                        inactive: false,
                     }, {
                         label: 'Parental Leave (for EMLL)',
                         value: 'parental_leave_emll',
                         abbr: 'pl3',
-                        inactive: false,
                     },
                 ],
                 diaLoading: false,
@@ -598,7 +600,7 @@
                 this.isDateRange = this.isHalf == "hd" ? false : true
             },
             leaveType () {
-                let _withHalfDay = ['vacation_leave', 'company_leave', 'sick_leave', 'paternity_leave', 'emergency_leave']
+                let _withHalfDay = ['vacation_leave', 'company_leave', 'sick_leave', 'emergency_leave']
                 let _isDateRange = ['emergency_leave', 'gynecological_leave', 'maternity_leave']
                     _isDateRange = _isDateRange.concat(_withHalfDay)
                 let _requireAttachment = ['sick_leave', 'maternity_leave', 'gynecological_leave', 'emergency_leave', 'paternity_leave', 'parental_leave']
@@ -695,6 +697,9 @@
                 } else {
                     return this.leave_type.value && this.isHalf && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
                 }
+            },
+            leave_eligibilities () {
+                return JSON.parse(Cookies.get('leaveEligibility'))
             },
         }
     }
