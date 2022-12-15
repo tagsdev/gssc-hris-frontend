@@ -57,8 +57,8 @@
                                 <q-td key="status" :props="props" class="text-center">
                                     <span class="q-px-sm q-py-xs rounded-borders text-weight-bold text-uppercase"
                                         :class="{
-                                            'bg-blue-1 text-blue-8': props.row.status == 'pending',
-                                            'bg-red-1 text-red-8': props.row.status == 'rejected',
+                                            'bg-blue-1 text-blue-8': ['pending', 'reviewing'].includes(props.row.status),
+                                            'bg-red-1 text-red-8': ['rejected', 'cancelled'].includes(props.row.status),
                                             'bg-teal-1 text-teal-14': props.row.status == 'approved',
                                             'bg-grey-3 text-grey-6': props.row.status == 'expired',
                                         }">{{ props.row.status }}</span>
@@ -69,6 +69,10 @@
                                         {{ props.row.reason }}
                                         <q-tooltip v-if="props.row.reason.length > 50" content-style="font-size: 12px" transition-show="scale" :delay="500" transition-hide="scale" content-class="bg-grey-12 text-black">{{ props.row.reason }}</q-tooltip>
                                     </div>
+                                </q-td>
+
+                                <q-td key="actions" :props="props" class="text-center">
+                                    <q-btn v-if="!['cancelled', 'expired', 'transacted'].includes(props.row.status.toLowerCase())" flat size="sm" icon="las la-trash" color="red-4" class="text-uppercase q-px-sm q-py-xs" @click="cancelDialog(props.row)" />
                                 </q-td>
                             </q-tr>
                         </template>
@@ -145,6 +149,31 @@
                         </q-card-actions>
                     </q-card>
                 </q-dialog>
+
+                <q-dialog persistent v-model="cancel_dialog" class="q-px-xl">
+                    <q-card style="width: 60vw; max-width: 500px;">
+                        <q-card-section class="q-mx-md">
+                            <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Cancel Request</div>
+                        </q-card-section>
+
+                        <q-separator class="q-mx-xl" />
+
+                        <q-card-section class="q-mx-md">
+                            <p class="q-px-md">
+                                Are you sure you want to Cancel this request?
+                            </p>
+                        </q-card-section>
+
+                        <q-card-actions class="q-pb-lg q-px-md" align="right">
+                            <div class="row q-px-md q-pb-md">
+                                <div class="col q-px-md">
+                                    <q-btn label="Yes" color="primary" class="text-uppercase q-px-sm q-py-xs q-mr-sm" @click="cancel(cancel_id)" :loading="diaLoading" v-close-popup />
+                                    <q-btn flat label="No" class="text-uppercase q-px-sm q-py-xs" v-close-popup />
+                                </div>
+                            </div>
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
             </div>
         </div>
     </q-page>
@@ -182,7 +211,18 @@
                         field: 'reason',
                         sortable: false
                     },
+                    {
+                        name: 'actions',
+                        align: 'right',
+                        label: '',
+                        sortable: false,
+                        headerStyle: {
+                            'width': '5% !important',
+                            'text-align': 'center',
+                        },
+                    },
                 ],
+                cancel_dialog: false,
                 dateNow: new Date(),
                 date_placeholder: "",
                 date_range: {
@@ -293,6 +333,36 @@
                         console.error(error)
                     })
             },
+            cancel (id) {
+                this.diaLoading = true
+
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/cancel`, { id: id }, {
+                    headers: {
+                        'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
+                    }
+                })
+                .then(response => {
+                    this.diaLoading = false
+                    this.cancel_dialog = false
+
+                    this.rows.map((value, key) => {
+                        if (value.request_id == id) {
+                            value.status = 'cancelled'
+                        }
+                    })
+
+                    Notify.create({
+                        type: 'positive',
+                        message: `Request Cancelled Successfully!`,
+                        closeBtn: false,
+                    })
+                })
+                .catch(error => {
+                    this.diaLoading = false
+                    this.errorMessage = error.message
+                    console.error(error)
+                })
+            },
             populateDateRange() {
                 let _format = "MMM DD, YYYY"
 
@@ -321,11 +391,20 @@
                 this.date_range = ''
                 this.date_placeholder = ''
             },
-            _test() {
-                let _test = { date: 'Jun 4, 2022', name: "Monkey D. Luffy", status: "pending", type: "EL", reason: "Taking down Kaido." }
+            getRequestInformation (row) {
+                let _data = this.rows[this.rows.indexOf(row)]
 
-                this.rows.unshift(_test)
-                this.$refs.qDialog.hide()
+                this.request_info.time = _data.time
+                this.request_info.type = _data.type
+                this.request_info.status = _data.status
+                this.request_info.reason = _data.reason
+                this.date = _data.date_to
+                this.date_placeholder = moment(_data.date_to).format("MMM DD, YYYY")
+            },
+            cancelDialog (row) {
+                this.cancel_dialog = true
+                // this.getRequestInformation(row)
+                this.cancel_id = row.request_id
             },
         },
         mounted() {
