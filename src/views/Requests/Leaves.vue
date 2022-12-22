@@ -109,140 +109,215 @@
                 <q-btn class="new-request q-pa-md bg-primary text-white text-weight-bold" @click="request_dialog = true" color="secondary" icon="las la-plus" label="New Request" />
 
                 <q-dialog persistent v-model="request_dialog" class="q-px-xl">
-                    <q-card style="width: 60vw; max-width: 1200px;">
-                        <q-card-section class="q-mx-md">
-                            <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Employee Leave Request Form</div>
-                        </q-card-section>
-
-                        <q-separator class="q-mx-xl" />
-
+                    <q-card style="width: 70vw; max-width: 1600px;">
                         <q-card-section>
-                            <div class="row q-px-md q-mb-sm">
-                                <div class="col q-mx-md">
-                                    <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Leave Balances</span>
-                                </div>
-                            </div>
-
                             <div class="row q-px-md">
-                                <div class="col q-mx-md bordered">
-                                    <q-list class="shadow-8" style="border-radius: 0.5rem;">
-                                        <q-item>
-                                            <q-item-section class="q-py-md" center>
-                                                <q-item-label class="text-weight-bold text-uppercase">Vacation<br />Leave</q-item-label>
-                                            </q-item-section>
+                                <div class="col">
+                                    <div class="row q-pt-md q-mb-sm">
+                                        <div class="col q-mx-md">
+                                            <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Leave Balances</span>
+                                        </div>
+                                    </div>
 
-                                            <q-item-section side center>
-                                                <q-badge :label="this.leaves.vl" transparent color="blue-8" class="q-pa-sm" style="font-size: 1rem;" />
-                                            </q-item-section>
-                                        </q-item>
-                                    </q-list>
-                                </div>
+                                    <div class="row">
+                                        <div class="col q-mx-md bordered">
+                                            <q-list class="shadow-8" style="border-radius: 0.5rem;">
+                                                <q-item>
+                                                    <q-item-section class="q-py-md" center>
+                                                        <q-item-label class="text-weight-bold text-uppercase">Vacation<br />Leave</q-item-label>
+                                                    </q-item-section>
 
-                                <div class="col q-mx-md bordered">
-                                    <q-list class="shadow-8" style="border-radius: 0.5rem;">
-                                        <q-item>
-                                            <q-item-section class="q-py-md" center>
-                                                <q-item-label class="text-weight-bold text-uppercase">Sick<br />Leave</q-item-label>
-                                            </q-item-section>
+                                                    <q-item-section side center>
+                                                        <q-badge :label="this.leaves.vl" transparent color="blue-8" class="q-pa-sm" style="font-size: 1rem;" />
+                                                    </q-item-section>
+                                                </q-item>
+                                            </q-list>
+                                        </div>
 
-                                            <q-item-section side center>
-                                                <q-badge :label="this.leaves.sl" transparent color="orange-8" class="q-pa-sm" style="font-size: 1rem;" />
-                                            </q-item-section>
-                                        </q-item>
-                                    </q-list>
-                                </div>
+                                        <div class="col q-mx-md bordered">
+                                            <q-list class="shadow-8" style="border-radius: 0.5rem;">
+                                                <q-item>
+                                                    <q-item-section class="q-py-md" center>
+                                                        <q-item-label class="text-weight-bold text-uppercase">Sick<br />Leave</q-item-label>
+                                                    </q-item-section>
 
-                                <div class="col q-mx-md bordered">
-                                    <q-list class="shadow-8" style="border-radius: 0.5rem;">
-                                        <q-item>
-                                            <q-item-section class="q-py-md" center>
-                                                <q-item-label class="text-weight-bold text-uppercase">Emergency<br />Leave</q-item-label>
-                                            </q-item-section>
+                                                    <q-item-section side center>
+                                                        <q-badge :label="this.leaves.sl" transparent color="orange-8" class="q-pa-sm" style="font-size: 1rem;" />
+                                                    </q-item-section>
+                                                </q-item>
+                                            </q-list>
+                                        </div>
 
-                                            <q-item-section side center>
-                                                <q-badge :label="this.leaves.el" transparent color="red-8" class="q-pa-sm" style="font-size: 1rem;" />
-                                            </q-item-section>
-                                        </q-item>
-                                    </q-list>
-                                </div>
-                            </div>
+                                        <div class="col q-mx-md bordered">
+                                            <q-list class="shadow-8" style="border-radius: 0.5rem;">
+                                                <q-item>
+                                                    <q-item-section class="q-py-md" center>
+                                                        <q-item-label class="text-weight-bold text-uppercase">Emergency<br />Leave</q-item-label>
+                                                    </q-item-section>
 
-                            <div class="row q-px-md q-mt-lg q-mb-md">
-                                <div class="col q-mx-md">
-                                    <q-banner rounded class="bg-grey-12">
-                                        All fields with asterisks (<code class="text-red-8"><strong>*</strong></code>) are required.
-                                    </q-banner>
-                                </div>
-                            </div>
+                                                    <q-item-section side center>
+                                                        <q-badge :label="this.leaves.el" transparent color="red-8" class="q-pa-sm" style="font-size: 1rem;" />
+                                                    </q-item-section>
+                                                </q-item>
+                                            </q-list>
+                                        </div>
+                                    </div>
 
-                            <div class="row q-px-md" style="padding-top: 1rem;">
-                                <div class="col q-px-md">
-                                    <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Leave Type</span>
-                                    <q-select outlined v-model="leave_type" @input="leaveType()" :options="leave_types" color="secondary" :rules="[val => !!val || 'This field is required']">
-                                        <template v-slot:selected>
-                                            <strong v-if="leave_type.value">{{ leave_type.label }}</strong>
-                                        </template>
+                                    <div class="col q-px-md q-pt-lg">
+                                        <q-banner rounded class="bg-grey-12 q-pt-md text-body2" style="margin-top: 15px;">
+                                            All fields with asterisks (<code class="text-red-8"><strong>*</strong></code>) are required.
+                                        </q-banner>
+                                    </div>
 
-                                        <template v-slot:option="scope">
-                                            <q-item v-if="leave_eligibilities.includes(scope.opt.abbr.toUpperCase()) || scope.opt.generic" v-bind="scope.itemProps" v-on="scope.itemEvents">
-                                                <q-item-section>
-                                                    <q-item-label v-html="scope.opt.label" />
-                                                </q-item-section>
-                                            </q-item>
-                                        </template>
-                                    </q-select>
-                                </div>
+                                    <div class="row" style="padding-top: 1.5rem;">
+                                        <div class="col q-px-md">
+                                            <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Day Type</span>
+                                            <div class="q-pb-md">
+                                                <q-radio v-model="isHalf" selected checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="wd" label="Whole Day" color="secondary" @input="dateRange()" :disable="disableDayType" class="q-mx-xs text-weight-bold text-uppercase" />
+                                                <q-radio v-model="isHalf" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="hd" label="Half Day" color="secondary" @input="dateRange()" :disable="disableDayType" class="q-mx-xs text-weight-bold text-uppercase" />
+                                                <q-checkbox v-model="isLate" @input="clearDate()" val="lf" label="Late Filing" color="red-8" class="q-mx-xs text-weight-bold text-uppercase" />
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <div class="col q-px-md">
-                                    <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Day Type</span>
-                                    <div class="q-py-sm">
-                                        <q-radio v-model="isHalf" selected checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="wd" label="Whole Day" color="secondary" @input="dateRange()" :disable="disableDayType" class="q-mx-xs text-weight-bold text-uppercase" />
-                                        <q-radio v-model="isHalf" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="hd" label="Half Day" color="secondary" @input="dateRange()" :disable="disableDayType" class="q-mx-xs text-weight-bold text-uppercase" />
-                                        <q-checkbox v-model="isLate" @input="clearDate()" val="lf" label="Late Filing" color="red-8" class="q-mx-xs text-weight-bold text-uppercase" />
+                                    <div class="row">
+                                        <div class="col q-px-md">
+                                            <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Leave Type</span>
+                                            <q-select outlined v-model="leave_type" @input="leaveType()" :options="leave_types" color="secondary" :rules="[val => !!val || 'This field is required']">
+                                                <template v-slot:selected>
+                                                    <strong v-if="leave_type.value">{{ leave_type.label }}</strong>
+                                                </template>
+
+                                                <template v-slot:option="scope">
+                                                    <q-item v-if="leave_eligibilities.includes(scope.opt.abbr.toUpperCase()) || scope.opt.generic" v-bind="scope.itemProps" v-on="scope.itemEvents">
+                                                        <q-item-section>
+                                                            <q-item-label v-html="scope.opt.label" />
+                                                        </q-item-section>
+                                                    </q-item>
+                                                </template>
+                                            </q-select>
+                                        </div>
+
+                                        <div class="col q-px-md">
+                                            <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Date</span>
+                                            <q-input outlined v-model="date_placeholder" color="secondary" @click="$refs.qDateProxy.show()" :rules="[val => !!val || 'This field is required']">
+                                                <template v-slot:append>
+                                                    <q-icon name="event" class="cursor-pointer">
+                                                        <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
+                                                            <q-date v-model="date_range" :range="isDateRange" today-btn mask="YYYY-MM-DD" :options="dateOptions" color="secondary" @input="populateDateRange()" />
+                                                        </q-popup-proxy>
+                                                    </q-icon>
+                                                </template>
+                                            </q-input>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col q-px-md">
+                                                    <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Reason</span>
+                                                    <q-input v-model="reason" outlined autogrow color="secondary" counter maxlength="300" :rules="[val => !!val || 'This field is required']" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-6 q-px-md" v-if="leaves_with_remarks.includes(leave_type.abbr)">
+                                                    <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Remarks</span>
+                                                    <q-select outlined v-model="remarks" :options="leaves_remarks_dropdown[leave_type.remarks]" color="secondary" :rules="[val => !!val || 'This field is required']" />
+                                                </div>
+
+                                                <div class="col-6 q-px-md">
+                                                    <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9" :class="{'--required': requireAttachment }">File Attachment(s)</span>
+
+                                                    <q-file v-model="files" color="secondary" class="text-weight-bold attachment" outlined clearable counter :reactive-rules="true" :rules="[ val => (!requireAttachment || requireAttachment && !!val) || 'This field is required' ]">
+                                                        <template v-slot:prepend>
+                                                            <q-icon name="las la-paperclip" />
+                                                        </template>
+
+                                                        <template v-slot:append>
+                                                            <q-tooltip content-class="bg-grey-1 text-black shadow-2 q-pt-md q-px-lg"
+                                                                content-style="font-size: 13px;"
+                                                                transition-show="scale"
+                                                                transition-hide="scale"
+                                                            >
+                                                                <div v-if="leave_type.abbr == 'sl'">
+                                                                    Note: Attachment for Sick Leave (SL)
+
+                                                                    <ul>
+                                                                        <li>Medical Certificate</li>
+                                                                        <li>Medical Record (Abstract, Operating Record etc.) if undergo operation</li>
+                                                                    </ul>
+                                                                </div>
+
+                                                                <div v-if="leave_type.abbr == 'el'">
+                                                                    Note: Attachment for Emergency Leave (EL)
+
+                                                                    <ul>
+                                                                        <li>Illness/Hospitalization of Qualified Dependent/s - Medical Certificate/Hospital Record</li>
+                                                                        <li>Marriage of Team Member - Marriage Contract</li>
+                                                                        <li>Death of Qualified Dependent/s - Death Certificate</li>
+                                                                        <li>Calamity - Barangay Certificate</li>
+                                                                    </ul>
+                                                                </div>
+
+                                                                <div v-if="['pl', 'pl2', 'pl3'].includes(leave_type.abbr)">
+                                                                    Note: Attachment for Parental Leave (PL)
+
+                                                                    <ul>
+                                                                        <li>
+                                                                            Paternity Leave
+
+                                                                            <ul>
+                                                                                <li>Birth Certificate (Normal/Caesarian Delivery)</li>
+                                                                                <li>Operating Room Record (Miscarriage)</li>
+                                                                            </ul>
+                                                                        </li>
+                                                                        <li>
+                                                                            Parental Leave
+
+                                                                            <ul>
+                                                                                <li>Solo Parent ID</li>
+                                                                            </ul>
+                                                                        </li>
+                                                                        <li>
+                                                                            Allocation of Paternity/Caregiver Leave
+
+                                                                            <ul>
+                                                                                <li>Intent Letter for Allocation (Acknowledged by Supervisor/Manager)</li>
+                                                                                <li>Marriage Contract/Barangay Certificate indicating shared household</li>
+                                                                                <li>Certification from the Employer of spouse/alternate caregiver for the allocation of Paternity Leave</li>
+                                                                                <li>Mat 1 & Mat 2 Requirement Copies</li>
+                                                                                <li>Birth Certificate of Child</li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </q-tooltip>
+
+                                                            <q-icon name="info" v-if="show_attachment_tooltip" color="blue" />
+                                                        </template>
+
+                                                        <template v-slot:hint v-if="show_attachment_tooltip">
+                                                            <em>Hover <q-icon name="info" color="grey-6" /> for attachment information.</em>
+                                                        </template>
+                                                    </q-file>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="row q-px-md">
-                                <div class="col-6 q-px-md">
-                                    <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Date</span>
-                                    <q-input outlined v-model="date_placeholder" color="secondary" @click="$refs.qDateProxy.show()" :rules="[val => !!val || 'This field is required']">
-                                        <template v-slot:append>
-                                            <q-icon name="event" class="cursor-pointer">
-                                                <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
-                                                    <q-date v-model="date_range" :range="isDateRange" today-btn mask="YYYY-MM-DD" :options="dateOptions" color="secondary" @input="populateDateRange()" />
-                                                </q-popup-proxy>
-                                            </q-icon>
-                                        </template>
-                                    </q-input>
-                                </div>
-
-                                <div class="col-6 q-px-md">
-                                    <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9" :class="{'--required': requireAttachment }">File Attachment(s)</span>
-                                    <q-file v-model="files" color="secondary" class="text-weight-bold attachment" outlined clearable counter :reactive-rules="true" :rules="[ val => (!requireAttachment || requireAttachment && !!val) || 'This field is required' ]">
-                                        <template v-slot:prepend>
-                                            <q-icon name="las la-paperclip" />
-                                        </template>
-                                    </q-file>
-                                </div>
-                            </div>
-
-                            <div class="row q-px-md">
-                                <div class="col q-px-md">
-                                    <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Reason</span>
-                                    <q-input v-model="reason" outlined autogrow color="secondary" counter maxlength="300" :rules="[val => !!val || 'This field is required']" />
-                                </div>
-                            </div>
                         </q-card-section>
 
-                        <q-card-actions class="q-pb-lg q-px-md" align="right">
+                        <q-card-section class="q-pb-lg q-px-md justify-between">
                             <div class="row q-px-md q-pb-md">
-                                <div class="col q-px-md">
+                                <div class="col q-px-md" align="right">
                                     <q-btn label="Submit" color="secondary" class="text-uppercase q-px-xl q-py-xs q-mr-lg" :disabled="!isComplete" :loading="diaLoading" @click="submit()" />
                                     <q-btn flat label="Cancel" class="text-uppercase q-px-sm q-py-xs" @click="clearDialog()" v-close-popup />
                                 </div>
                             </div>
-                        </q-card-actions>
+                        </q-card-section>
                     </q-card>
                 </q-dialog>
 
@@ -265,7 +340,9 @@
                                                 {{ this.request_info.type }}<span v-if="this.request_info.desc"> - {{ this.request_info.desc }}</span>
                                             </span>
 
-                                            <span class="block"><i><i class="las la-quote-left"></i> &nbsp; {{ this.request_info.reason }} &nbsp; <i class="las la-quote-right"></i></i></span>
+                                            <span class="block">
+                                                <em><i class="las la-quote-left"></i> &nbsp; {{ this.request_info.reason }} &nbsp; <i class="las la-quote-right"></i></em>
+                                            </span>
 
                                             <q-btn flat class="q-mt-sm" color="primary" icon="las la-download" label="Download Attachment" v-if="this.request_info.attachment" />
                                         </q-card-section>
@@ -380,11 +457,14 @@
                     to: ''
                 },
                 details_dialog: false,
+                isCutoff: false,
                 isDateRange: true,
                 isHalf: "wd",
                 isLate: false,
                 disableDayType: false,
                 leaves: [],
+                leaves_with_remarks: ['cl', 'el', 'ml', 'pl', 'pl2', 'pl3'],
+                leaves_remarks_dropdown: [],
                 leave_type: {
                     label: '',
                     value: '',
@@ -401,6 +481,7 @@
                         value: 'company_leave',
                         abbr: 'cl',
                         generic: true,
+                        remarks: 'LEAVECL',
                     }, {
                         label: 'Sick Leave',
                         value: 'sick_leave',
@@ -411,31 +492,37 @@
                         value: 'emergency_leave',
                         abbr: 'el',
                         generic: true,
+                        remarks: 'LEAVEELCAT',
                     }, {
                         label: 'Maternity Leave',
                         value: 'maternity_leave',
                         abbr: 'ml',
-                    }, {
-                        label: 'Paternity Leave',
-                        value: 'paternity_leave',
-                        abbr: 'pl',
+                        remarks: 'LEAVEMLCAT',
                     }, {
                         label: 'Gynecological Leave',
                         value: 'gynecological_leave',
                         abbr: 'gl',
                     }, {
+                        label: 'Paternity Leave',
+                        value: 'paternity_leave',
+                        abbr: 'pl',
+                        remarks: 'LEAVEPLCAT',
+                    }, {
                         label: 'Parental Leave (Solo Parent)',
                         value: 'parental_leave',
                         abbr: 'pl2',
+                        remarks: 'LEAVEPLCAT',
                     }, {
                         label: 'Parental Leave (for EMLL)',
                         value: 'parental_leave_emll',
                         abbr: 'pl3',
+                        remarks: 'LEAVEPLCAT',
                     },
                 ],
                 diaLoading: false,
                 loading: false,
                 requireAttachment: false,
+                remarks: "",
                 reason: "",
                 request_info: {
                     requestor: "",
@@ -454,14 +541,34 @@
                 },
                 request_dialog: false,
                 search: '',
+                show_attachment_tooltip: false,
                 timeline: [],
             }
         },
         methods: {
+            updateCutoff () {
+                // to do: these are defaults, but can also be overridden.
+                // can also be modified through CRM
+                if ([8, 23].includes(moment().format("DD"))) {
+                    setInterval(() => {
+                        let _time = moment().format('HH:mm')
+
+                        // to do: this is a default schedule, but can also be overridden
+                        // can also be modified through CRM
+                        if (_time >= "10:00") {
+                            this.isCutoff = true
+                        }
+                    }, 500)
+                }
+            },
             dateOptions (dateNow) {
                 if (this.isLate) {
                     return dateNow < moment().format("YYYY/MM/DD")
                 } else {
+                    if (this.isCutoff) {
+                        return dateNow >= moment().add(1, 'day').format("YYYY/MM/DD")
+                    }
+
                     return dateNow >= moment().format("YYYY/MM/DD")
                 }
             },
@@ -486,6 +593,23 @@
                         this.loading = false
                     });
             },
+            getLeavesWithRemarks () {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                }
+
+                this.loading = true
+
+                axios.get(`${ process.env.VUE_APP_API_URL }/user/request/leaves/remarks`, { headers })
+                    .then(response => {
+                        this.leaves_remarks_dropdown = response.data
+                        this.loading = false
+                    })
+                    .catch((error) => {
+                        console.error(error)
+                        this.loading = false
+                    });
+            },
             onRequest (props) {
                 const { page, rowsPerPage } = props.pagination
                 const filter = props.filter
@@ -499,6 +623,11 @@
                 this.getTeamLeaveTracker(params)
             },
             submit () {
+                let headers = {
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
+                    'Content-Type': 'multipart/form-data'
+                }
+
                 let data = {
                     type: this.leave_type.value,
                     type_label: this.leave_type.label,
@@ -507,6 +636,7 @@
                         to: this.date_range.to
                     },
                     reason: this.reason,
+                    remarks: this.remarks,
                     day_type: this.isHalf,
                     late_filing: this.isLate,
                     abbr: this.leave_type.abbr,
@@ -527,32 +657,27 @@
                 formData.append('data', JSON.stringify(data))
                 formData.append('_method', 'PUT')
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/submit`, formData, {
-                    headers: {
-                        'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                .then(response => {
-                    this.diaLoading = false
-                    this.request_dialog = false
-                    this.clearDialog()
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/leaves/submit`, formData, { headers })
+                    .then(response => {
+                        this.diaLoading = false
+                        this.request_dialog = false
+                        this.clearDialog()
 
-                    this.onRequest({
-                        pagination: this.pagination,
-                        filter: this.search,
-                    })
+                        this.onRequest({
+                            pagination: this.pagination,
+                            filter: this.search,
+                        })
 
-                    Notify.create({
-                        type: 'positive',
-                        message: `Request Submitted Successfully!`,
-                        closeBtn: false,
+                        Notify.create({
+                            type: 'positive',
+                            message: `Request Submitted Successfully!`,
+                            closeBtn: false,
+                        })
                     })
-                })
-                .catch(error => {
-                    this.errorMessage = error.message
-                    console.error(error)
-                })
+                    .catch(error => {
+                        this.errorMessage = error.message
+                        console.error(error)
+                    })
             },
             cancel (id) {
                 this.diaLoading = true
@@ -607,13 +732,16 @@
 
                 this.clearDate()
                 this.isHalf = "wd"
+                this.remarks = ""
                 this.isDateRange = _isDateRange.includes(this.leave_type.value) && (this.isHalf == "wd") ? true : false
                 this.disableDayType = _withHalfDay.includes(this.leave_type.value) ? false : true
                 this.requireAttachment = _requireAttachment.includes(this.leave_type.value) ? true : false
+                this.show_attachment_tooltip = ['sl', 'el', 'pl', 'pl2', 'pl3'].includes(this.leave_type.abbr) ? true : false
             },
             clearDialog () {
                 this.clearDate()
                 this.leave_type = ''
+                this.remarks = ''
                 this.files = null
                 this.reason = ''
                 this.isHalf = "wd"
@@ -685,6 +813,8 @@
         },
         mounted () {
             this.leaves = JSON.parse(Cookies.get('leaves'))
+            this.getLeavesWithRemarks()
+            this.updateCutoff()
             this.onRequest({
                 pagination: this.pagination,
                 filter: this.search,
@@ -692,11 +822,17 @@
         },
         computed: {
             isComplete () {
+                let _return = this.leave_type.value && this.isHalf && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
+
                 if (this.requireAttachment) {
-                    return this.leave_type.value && this.isHalf && this.files && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
-                } else {
-                    return this.leave_type.value && this.isHalf && ((this.date_range.from && this.date_range.to) || (this.date_range)) && this.reason
+                    _return = _return && this.files
                 }
+
+                if (this.leaves_with_remarks.includes(this.leave_type.abbr)) {
+                    _return = _return && this.remarks
+                }
+
+                return _return
             },
             leave_eligibilities () {
                 return JSON.parse(Cookies.get('leaveEligibility'))

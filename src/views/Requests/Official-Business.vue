@@ -124,9 +124,19 @@
                             </div>
 
                             <div class="row q-px-md">
-                                <div class="col-12 q-px-md">
+                                <div class="col-6 q-px-md">
                                     <span class="block --required q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">Location</span>
                                     <q-input v-model="location" outlined color="secondary" :rules="[val => !!val || 'This field is required']" />
+                                </div>
+
+                                <div class="col-6 q-px-md">
+                                    <span class="block q-mb-xs text-uppercase text-weight-bold text-blue-grey-9">File Attachment(s)</span>
+
+                                    <q-file v-model="files" color="secondary" class="text-weight-bold attachment" outlined clearable counter :reactive-rules="true">
+                                        <template v-slot:prepend>
+                                            <q-icon name="las la-paperclip" />
+                                        </template>
+                                    </q-file>
                                 </div>
                             </div>
 
@@ -188,6 +198,7 @@
     export default {
         data() {
             return {
+                files: null,
                 columns: [
                     {
                         name: 'date',
@@ -284,7 +295,8 @@
             },
             submit() {
                 let headers = {
-                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`
+                    'Authorization': `Bearer ${ Cookies.get('accessToken') }`,
+                    'Content-Type': 'multipart/form-data'
                 }
 
                 let data = {
@@ -311,7 +323,12 @@
 
                 this.diaLoading = true
 
-                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/ob/submit`, data, { headers })
+                let formData = new FormData()
+                formData.append('file', this.files)
+                formData.append('data', JSON.stringify(data))
+                formData.append('_method', 'PUT')
+
+                axios.post(`${ process.env.VUE_APP_API_URL }/user/request/ob/submit`, formData, { headers })
                     .then(response => {
                         this.diaLoading = false
                         this.request_dialog = false

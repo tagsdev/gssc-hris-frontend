@@ -252,7 +252,7 @@
                 </q-dialog>
 
                 <q-dialog persistent v-model="dialog.details" class="q-px-xl">
-                    <q-card style="width: 60vw; max-width: 1200px;">
+                    <q-card style="width: 80vw; max-width: 1600px;">
                         <q-card-section class="q-mx-md">
                             <div class="text-h6 q-pt-md q-px-xs text-uppercase">&nbsp; Filed Request Information</div>
                         </q-card-section>
